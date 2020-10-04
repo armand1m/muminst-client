@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { InstantButton } from './components/InstantButton'
 import { Global } from '@emotion/core'
+import { InstantButton } from './components/InstantButton'
 import globalStyle from './globalStyle'
 
 const MainContainer = styled.div`
@@ -15,13 +15,33 @@ const Title = styled.div`
     font-family: 'Rubik Mono One';
 `
 
+const ButtonsSection = styled.div`
+    margin-top: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 70%;
+`
+
+const ButtonsWrapper = styled.div`
+    margin: 15px 20px;
+`
+
 function App() {
     return (
         <>
             <Global styles={globalStyle} />
             <MainContainer>
                 <Title>Muminst</Title>
-                <InstantButton name='Fausto' />
+                <ButtonsSection>
+                    {Array(25)
+                        .fill(0)
+                        .map((_, index) => (
+                            <ButtonsWrapper>
+                                <InstantButton name="Fausto" key={index} />
+                            </ButtonsWrapper>
+                        ))}
+                </ButtonsSection>
             </MainContainer>
         </>
     )

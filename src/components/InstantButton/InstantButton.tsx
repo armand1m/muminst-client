@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from '@emotion/styled'
 
 type Props = {
@@ -6,20 +6,19 @@ type Props = {
 }
 
 const hexMaxValue = 16777215
-const randomColor = '#' + Math.floor(Math.random() * hexMaxValue).toString(16)
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
 `
-const Button = styled.div`
+const Button = styled.div<{ color: string }>`
     width: 94px;
     height: 89px;
     border-radius: 150px;
     background-image: url('https://www.myinstants.com/media/images/transparent_button_small_normal.png');
     cursor: pointer;
-    background-color: ${randomColor};
+    background-color: ${({ color }) => color};
     &:active {
         background-image: url('https://www.myinstants.com/media/images/transparent_button_small_pressed.png');
     }
@@ -31,9 +30,14 @@ const Text = styled.div`
 `
 
 export const InstantButton = ({ name = 'no-name' }: Props) => {
+    const randomColor = useMemo(
+        () => `#${Math.floor(Math.random() * hexMaxValue).toString(16)}`,
+        []
+    )
+
     return (
         <Container>
-            <Button />
+            <Button color={randomColor} />
             <Text>{name}</Text>
         </Container>
     )
