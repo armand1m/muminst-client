@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Global } from '@emotion/core'
-import { InstantButton } from './components/InstantButton'
 import globalStyle from './globalStyle'
+import { InstantButton } from './components/InstantButton'
+import { ChannelSelector } from './components/ChannelSelector'
+import { getChannels } from './service'
 
 const MainContainer = styled.div`
     display: flex;
@@ -28,11 +30,20 @@ const ButtonsWrapper = styled.div`
 `
 
 function App() {
+    const [channels, setChannels] = useState<any[]>([])
+
+    useEffect(() => {
+        getChannels().then(({ data }) => {
+            setChannels(data)
+        })
+    }, [setChannels])
+
     return (
         <>
             <Global styles={globalStyle} />
             <MainContainer>
                 <Title>Muminst</Title>
+                <ChannelSelector channels={channels} />
                 <ButtonsSection>
                     {Array(25)
                         .fill(0)
