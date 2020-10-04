@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react'
 import styled from '@emotion/styled'
+import { getButtonUrl } from '../../constants'
 
 type Props = {
-    name?: string
+    name: string
 }
 
 const hexMaxValue = 16777215
@@ -16,11 +17,11 @@ const Button = styled.div<{ color: string }>`
     width: 94px;
     height: 89px;
     border-radius: 150px;
-    background-image: url('https://www.myinstants.com/media/images/transparent_button_small_normal.png');
+    background-image: url(${getButtonUrl('normal')});
     cursor: pointer;
     background-color: ${({ color }) => color};
     &:active {
-        background-image: url('https://www.myinstants.com/media/images/transparent_button_small_pressed.png');
+        background-image: url(${getButtonUrl('pressed')});
     }
 `
 const Text = styled.div`
@@ -29,7 +30,7 @@ const Text = styled.div`
     font-family: 'Rubik';
 `
 
-export const InstantButton = ({ name = 'no-name' }: Props) => {
+export const InstantButton = ({ name }: Props) => {
     const randomColor = useMemo(
         () => `#${Math.floor(Math.random() * hexMaxValue).toString(16)}`,
         []

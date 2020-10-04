@@ -7,8 +7,8 @@ type Props = {
 export const ChannelSelector = ({ channels }: Props) => (
     <>
         <select>
-            {channels.map((channel) => (
-                <option>{channel.name}</option>
+            {channels.map((channel, index) => (
+                <option key={`${channel.name}${index}`}>{channel.name}</option>
             ))}
         </select>
     </>

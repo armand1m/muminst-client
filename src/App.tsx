@@ -4,7 +4,7 @@ import { Global } from '@emotion/core'
 import globalStyle from './globalStyle'
 import { InstantButton } from './components/InstantButton'
 import { ChannelSelector } from './components/ChannelSelector'
-import { getChannels } from './service'
+import { getChannels, getSounds } from './service'
 
 const MainContainer = styled.div`
     display: flex;
@@ -31,12 +31,16 @@ const ButtonsWrapper = styled.div`
 
 function App() {
     const [channels, setChannels] = useState<any[]>([])
+    const [sounds, setSounds] = useState<string[]>([])
 
     useEffect(() => {
         getChannels().then(({ data }) => {
             setChannels(data)
         })
-    }, [setChannels])
+        getSounds().then(({ data }: { data: string[] }) => {
+            setSounds(data)
+        })
+    }, [setChannels, setSounds])
 
     return (
         <>
@@ -45,13 +49,13 @@ function App() {
                 <Title>Muminst</Title>
                 <ChannelSelector channels={channels} />
                 <ButtonsSection>
-                    {Array(25)
-                        .fill(0)
-                        .map((_, index) => (
-                            <ButtonsWrapper>
-                                <InstantButton name="Fausto" key={index} />
-                            </ButtonsWrapper>
-                        ))}
+                    {sounds.map((sound, index) => (
+                        <ButtonsWrapper key={`${sound}${index}`}>
+                            <InstantButton
+                                name={sound.split('.').slice(0, -1).join('')}
+                            />
+                        </ButtonsWrapper>
+                    ))}
                 </ButtonsSection>
             </MainContainer>
         </>

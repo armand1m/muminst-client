@@ -8,3 +8,4 @@ const apiRequest = (page: string, method: AxiosRequestConfig['method']) =>
     axios({ url: `${baseUrl}/${page}`, method })
 
 export const getChannels = () => apiRequest('channels', 'GET')
+export const getSounds = () => apiRequest('sounds', 'GET')
