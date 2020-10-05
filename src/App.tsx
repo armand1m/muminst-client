@@ -4,7 +4,7 @@ import { Global } from '@emotion/core'
 import globalStyle from './globalStyle'
 import { InstantButton } from './components/InstantButton'
 import { ChannelSelector } from './components/ChannelSelector'
-import { getChannels, getSounds } from './service'
+import { getChannels, getSounds, playSound } from './service'
 
 const MainContainer = styled.div`
     display: flex;
@@ -53,6 +53,7 @@ function App() {
                         <ButtonsWrapper key={`${sound}${index}`}>
                             <InstantButton
                                 name={sound.split('.').slice(0, -1).join('')}
+                                onClick={() => playSound(sound)}
                             />
                         </ButtonsWrapper>
                     ))}

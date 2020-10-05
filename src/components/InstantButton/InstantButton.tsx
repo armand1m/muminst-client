@@ -4,6 +4,7 @@ import { getButtonUrl } from '../../constants'
 
 type Props = {
     name: string
+    onClick: () => void
 }
 
 const hexMaxValue = 16777215
@@ -30,7 +31,7 @@ const Text = styled.div`
     font-family: 'Rubik';
 `
 
-export const InstantButton = ({ name }: Props) => {
+export const InstantButton = ({ name, onClick }: Props) => {
     const randomColor = useMemo(
         () => `#${Math.floor(Math.random() * hexMaxValue).toString(16)}`,
         []
@@ -38,7 +39,7 @@ export const InstantButton = ({ name }: Props) => {
 
     return (
         <Container>
-            <Button color={randomColor} />
+            <Button color={randomColor} onClick={onClick} />
             <Text>{name}</Text>
         </Container>
     )
