@@ -29,6 +29,7 @@ const Text = styled.div`
     font-size: 16px;
     margin-top: 7px;
     font-family: 'Rubik';
+    text-align: center;
 `
 
 export const InstantButton = ({ name, onClick }: Props) => {
