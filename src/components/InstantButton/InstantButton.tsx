@@ -2,11 +2,6 @@ import React, { useMemo } from 'react'
 import styled from '@emotion/styled'
 import { getButtonUrl } from '../../constants'
 
-type Props = {
-    name: string
-    onClick: () => void
-}
-
 const hexMaxValue = 16777215
 
 const Container = styled.div`
@@ -14,13 +9,22 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
 `
-const Button = styled.div<{ color: string }>`
+const Button = styled.button<{ color: string }>`
     width: 94px;
     height: 89px;
     border-radius: 150px;
+    border: none;
+    outline: none;
     background-image: url(${getButtonUrl('normal')});
     cursor: pointer;
     background-color: ${({ color }) => color};
+
+    transition: opacity 0.15s;
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
     &:active {
         background-image: url(${getButtonUrl('pressed')});
     }
@@ -32,15 +36,33 @@ const Text = styled.div`
     text-align: center;
 `
 
-export const InstantButton = ({ name, onClick }: Props) => {
-    const randomColor = useMemo(
-        () => `#${Math.floor(Math.random() * hexMaxValue).toString(16)}`,
-        []
-    )
+type Props = {
+    name: string
+    disabled: boolean
+    onClick: () => void
+}
+
+function hashCode(str: string) {
+    // java String#hashCode
+    let hash = 0
+    for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return hash
+}
+
+function intToRGB(i: number) {
+    const c = (i & 0x00ffffff).toString(16).toUpperCase()
+    console.log(c)
+    return '#' + ('00000'.substring(0, 6 - c.length) + c)
+}
+
+export const InstantButton = ({ name, onClick, disabled }: Props) => {
+    const color = intToRGB(hashCode(name))
 
     return (
         <Container>
-            <Button color={randomColor} onClick={onClick} />
+            <Button disabled={disabled} color={color} onClick={onClick} />
             <Text>{name}</Text>
         </Container>
     )
