@@ -39,10 +39,13 @@ const SearchWrapper = styled.div`
     font-family: 'Rubik';
 `
 
+const COOLDOWN = 3000 //ms
+
 function App() {
     const [channels, setChannels] = useState<Channel[]>([])
     const [sounds, setSounds] = useState<string[]>([])
     const [search, setSearch] = useState<string>('')
+    const [buttonsDisabled, setButtonsDisabled] = useState()
 
     useEffect(() => {
         getChannels().then(({ data }) => setChannels(data))
@@ -54,6 +57,12 @@ function App() {
 
     const filterBySearch = (sound: string) =>
         !search || sound.toLowerCase().includes(search.toLowerCase())
+
+    const onClick = (sound: string) => {
+        playSound(sound)
+        setButtonsDisabled(true)
+        setTimeout(() => setButtonsDisabled(false), COOLDOWN)
+    }
 
     return (
         <>
@@ -69,8 +78,9 @@ function App() {
                     {sounds.filter(filterBySearch).map((sound, index) => (
                         <ButtonsWrapper key={`${sound}${index}`}>
                             <InstantButton
+                                disabled={buttonsDisabled}
                                 name={withoutExtension(sound)}
-                                onClick={() => playSound(sound)}
+                                onClick={() => onClick(sound)}
                             />
                         </ButtonsWrapper>
                     ))}
