@@ -6,6 +6,7 @@ import { InstantButton } from './components/InstantButton'
 import { ChannelSelector } from './components/ChannelSelector'
 import { getChannels, getSounds, playSound } from './service'
 import { Search } from './components/Search'
+import { Channel } from './components/types'
 
 const MainContainer = styled.div`
     display: flex;
@@ -39,28 +40,20 @@ const SearchWrapper = styled.div`
 `
 
 function App() {
-    const [channels, setChannels] = useState<any[]>([])
+    const [channels, setChannels] = useState<Channel[]>([])
     const [sounds, setSounds] = useState<string[]>([])
-    const [filtred, setFiltred] = useState<string[]>([])
     const [search, setSearch] = useState<string>('')
 
     useEffect(() => {
-        getChannels().then(({ data }) => {
-            setChannels(data)
-        })
-        getSounds().then(({ data }: { data: string[] }) => {
-            setSounds(data)
-        })
+        getChannels().then(({ data }) => setChannels(data))
+        getSounds().then(({ data }) => setSounds(data))
     }, [setChannels, setSounds])
 
-    const filter = (event: any) => {
-        setSearch(event.target.value)
-        setFiltred(
-            sounds.filter((item) =>
-                item.toLowerCase().includes(event.target.value.toLowerCase())
-            )
-        )
-    }
+    const withoutExtension = (sound: string) =>
+        sound.split('.').slice(0, -1).join('')
+
+    const filterBySearch = (sound: string) =>
+        !search || sound.toLowerCase().includes(search.toLowerCase())
 
     return (
         <>
@@ -70,32 +63,17 @@ function App() {
                 <ChannelSelector channels={channels} />
                 <SearchWrapper>
                     Search
-                    <Search onChange={filter} />
+                    <Search onChange={(evt) => setSearch(evt.target.value)} />
                 </SearchWrapper>
                 <ButtonsSection>
-                    {search
-                        ? filtred.map((sound, index) => (
-                              <ButtonsWrapper key={`${sound}${index}`}>
-                                  <InstantButton
-                                      name={sound
-                                          .split('.')
-                                          .slice(0, -1)
-                                          .join('')}
-                                      onClick={() => playSound(sound)}
-                                  />
-                              </ButtonsWrapper>
-                          ))
-                        : sounds.map((sound, index) => (
-                              <ButtonsWrapper key={`${sound}${index}`}>
-                                  <InstantButton
-                                      name={sound
-                                          .split('.')
-                                          .slice(0, -1)
-                                          .join('')}
-                                      onClick={() => playSound(sound)}
-                                  />
-                              </ButtonsWrapper>
-                          ))}
+                    {sounds.filter(filterBySearch).map((sound, index) => (
+                        <ButtonsWrapper key={`${sound}${index}`}>
+                            <InstantButton
+                                name={withoutExtension(sound)}
+                                onClick={() => playSound(sound)}
+                            />
+                        </ButtonsWrapper>
+                    ))}
                 </ButtonsSection>
             </MainContainer>
         </>

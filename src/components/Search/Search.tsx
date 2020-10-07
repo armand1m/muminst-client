@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 
 type Props = {
-    onChange: (event: any) => void
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const Input = styled.input`

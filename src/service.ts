@@ -7,7 +7,7 @@ console.log(baseUrl)
 const apiRequest = (
     page: string,
     method: AxiosRequestConfig['method'],
-    data?: { [key: string]: string }
+    data?: { [key: string]: any }
 ) => axios({ url: `${baseUrl}/${page}`, method, data })
 
 export const getChannels = () => apiRequest('channels', 'GET')
