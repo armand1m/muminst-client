@@ -34,11 +34,10 @@ const Text = styled.div`
     text-align: center;
 `
 
-type Props = {
-    name: string
-    disabled: boolean
-    onClick: () => void
-}
+const ButtonsWrapper = styled.div`
+    margin: 15px 20px;
+    width: 100px;
+`
 
 const nameToRgb = (name: string) => {
     const hashCode = (str: string) =>
@@ -54,15 +53,35 @@ const nameToRgb = (name: string) => {
     return intToRGB(hashCode(name))
 }
 
-export const InstantButton = ({ name, onClick, disabled }: Props) => {
-    return (
+type Props = {
+    name: string
+    disabled: boolean
+    onClick: () => void
+    onFavorite: (sound: string) => void
+    favText: string
+}
+const withoutExtension = (sound: string) =>
+    sound.split('.').slice(0, -1).join('')
+
+export const InstantButton = ({
+    name,
+    onClick,
+    disabled,
+    onFavorite,
+    favText,
+}: Props) => (
+    <ButtonsWrapper>
         <Container>
             <Button
                 disabled={disabled}
                 color={nameToRgb(name)}
                 onClick={onClick}
             />
-            <Text>{name}</Text>
+            <Text>{withoutExtension(name)}</Text>
+
+            <button style={{ width: '100%' }} onClick={() => onFavorite(name)}>
+                {favText}
+            </button>
         </Container>
-    )
-}
+    </ButtonsWrapper>
+)

@@ -7,6 +7,7 @@ import { ChannelSelector } from './components/ChannelSelector'
 import { getChannels, getSounds, playSound } from './service'
 import { Search } from './components/Search'
 import { Channel } from './components/types'
+import { storage } from './services/local'
 
 const MainContainer = styled.div`
     display: flex;
@@ -27,11 +28,6 @@ const ButtonsSection = styled.div`
     width: 70%;
 `
 
-const ButtonsWrapper = styled.div`
-    margin: 15px 20px;
-    width: 100px;
-`
-
 const SearchWrapper = styled.div`
     margin-top: 40px;
     display: flex;
@@ -46,14 +42,21 @@ function App() {
     const [sounds, setSounds] = useState<string[]>([])
     const [search, setSearch] = useState<string>('')
     const [buttonsDisabled, setButtonsDisabled] = useState()
+    const [favorites, setFavorites] = useState<string[]>([])
+
+    useEffect(() => {
+        const storedFavorites = storage.get('favorites')
+        if (storedFavorites) {
+            setFavorites(storedFavorites)
+        } else {
+            storage.remove('favorites')
+        }
+    }, [])
 
     useEffect(() => {
         getChannels().then(({ data }) => setChannels(data))
         getSounds().then(({ data }) => setSounds(data))
     }, [setChannels, setSounds])
-
-    const withoutExtension = (sound: string) =>
-        sound.split('.').slice(0, -1).join('')
 
     const filterBySearch = (sound: string) =>
         !search || sound.toLowerCase().includes(search.toLowerCase())
@@ -63,6 +66,20 @@ function App() {
         setButtonsDisabled(true)
         setTimeout(() => setButtonsDisabled(false), COOLDOWN)
     }
+
+    const addFavorite = (sound: string) => {
+        const newFavorites = [...favorites, sound]
+        setFavorites(newFavorites)
+        storage.set('favorites', newFavorites)
+    }
+    const removeFavorite = (sound: string) => {
+        console.log(sound)
+        const newFavorites = favorites.filter((s) => s !== sound)
+        setFavorites(newFavorites)
+        storage.set('favorites', newFavorites)
+    }
+
+    const notInFavorites = (sound: string) => !favorites.includes(sound)
 
     return (
         <>
@@ -75,15 +92,33 @@ function App() {
                     <Search onChange={(evt) => setSearch(evt.target.value)} />
                 </SearchWrapper>
                 <ButtonsSection>
-                    {sounds.filter(filterBySearch).map((sound, index) => (
-                        <ButtonsWrapper key={`${sound}${index}`}>
+                    Favorites
+                    {favorites.map((sound, index) => (
+                        <InstantButton
+                            key={`${sound}${index}`}
+                            disabled={buttonsDisabled}
+                            onFavorite={removeFavorite}
+                            favText="Unfav"
+                            name={sound}
+                            onClick={() => onClick(sound)}
+                        />
+                    ))}
+                </ButtonsSection>
+                <ButtonsSection>
+                    All
+                    {sounds
+                        .filter(notInFavorites)
+                        .filter(filterBySearch)
+                        .map((sound, index) => (
                             <InstantButton
+                                key={`${sound}${index}`}
                                 disabled={buttonsDisabled}
-                                name={withoutExtension(sound)}
+                                onFavorite={addFavorite}
+                                favText="favorite"
+                                name={sound}
                                 onClick={() => onClick(sound)}
                             />
-                        </ButtonsWrapper>
-                    ))}
+                        ))}
                 </ButtonsSection>
             </MainContainer>
         </>
