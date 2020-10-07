@@ -1,8 +1,6 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 import { getButtonUrl } from '../../constants'
-
-const hexMaxValue = 16777215
 
 const Container = styled.div`
     display: flex;
@@ -42,27 +40,28 @@ type Props = {
     onClick: () => void
 }
 
-function hashCode(str: string) {
-    // java String#hashCode
-    let hash = 0
-    for (var i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash)
-    }
-    return hash
-}
+const nameToRgb = (name: string) => {
+    const hashCode = (str: string) =>
+        str
+            .split('')
+            .reduce((hash, _, i) => str.charCodeAt(i) + ((hash << 5) - hash), 0)
 
-function intToRGB(i: number) {
-    const c = (i & 0x00ffffff).toString(16).toUpperCase()
-    console.log(c)
-    return '#' + ('00000'.substring(0, 6 - c.length) + c)
+    const intToRGB = (i: number) => {
+        const c = (i & 0x00ffffff).toString(16).toUpperCase()
+        return '#' + ('00000'.substring(0, 6 - c.length) + c)
+    }
+
+    return intToRGB(hashCode(name))
 }
 
 export const InstantButton = ({ name, onClick, disabled }: Props) => {
-    const color = intToRGB(hashCode(name))
-
     return (
         <Container>
-            <Button disabled={disabled} color={color} onClick={onClick} />
+            <Button
+                disabled={disabled}
+                color={nameToRgb(name)}
+                onClick={onClick}
+            />
             <Text>{name}</Text>
         </Container>
     )
