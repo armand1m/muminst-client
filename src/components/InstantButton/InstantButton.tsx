@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { getButtonUrl } from '../../constants'
+import { Sound } from '../../service'
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 `
 const Button = styled.button<{ color: string }>`
     width: 94px;
@@ -35,7 +37,7 @@ const Text = styled.div`
 `
 
 const ButtonsWrapper = styled.div`
-    margin: 15px 20px;
+    padding: 15px 20px;
     width: 100px;
 `
 
@@ -54,33 +56,36 @@ const nameToRgb = (name: string) => {
 }
 
 type Props = {
-    name: string
+    sound: Sound
     disabled: boolean
     onClick: () => void
-    onFavorite: (sound: string) => void
-    favText: string
+    onFavorite: (sound: Sound) => void
 }
-const withoutExtension = (sound: string) =>
-    sound.split('.').slice(0, -1).join('')
 
 export const InstantButton = ({
-    name,
+    sound,
     onClick,
     disabled,
     onFavorite,
-    favText,
 }: Props) => (
     <ButtonsWrapper>
         <Container>
             <Button
                 disabled={disabled}
-                color={nameToRgb(name)}
+                color={nameToRgb(sound.name)}
                 onClick={onClick}
             />
-            <Text>{withoutExtension(name)}</Text>
+            <Text>{sound.name}</Text>
 
-            <button style={{ width: '100%' }} onClick={() => onFavorite(name)}>
-                {favText}
+            <button
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                }}
+                onClick={() => onFavorite(sound)}
+            >
+                +
             </button>
         </Container>
     </ButtonsWrapper>

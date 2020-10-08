@@ -1,14 +1,15 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import axios from 'axios'
 
-const baseUrl = process.env.REACT_APP_API_URL
+const baseURL = process.env.REACT_APP_API_URL
 
-const apiRequest = (
-    page: string,
-    method: AxiosRequestConfig['method'],
-    data?: { [key: string]: any }
-) => axios({ url: `${baseUrl}/${page}`, method, data })
+export type Sound = {
+    name: string
+    id: string
+}
 
-export const getChannels = () => apiRequest('channels', 'GET')
-export const getSounds = () => apiRequest('sounds', 'GET')
-export const playSound = (soundName: string) =>
-    apiRequest('play-sound', 'POST', { soundName })
+const client = axios.create({ baseURL })
+
+export const getChannels = () => client.get('channels')
+export const getSounds = () => client.get<Sound[]>('sounds')
+export const playSound = (sound: Sound) =>
+    client.post('play-sound', { soundId: sound.id })

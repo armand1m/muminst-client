@@ -4,7 +4,7 @@ import { Global } from '@emotion/core'
 import globalStyle from './globalStyle'
 import { InstantButton } from './components/InstantButton'
 import { ChannelSelector } from './components/ChannelSelector'
-import { getChannels, getSounds, playSound } from './service'
+import { getChannels, getSounds, playSound, Sound } from './service'
 import { Search } from './components/Search'
 import { Channel } from './components/types'
 import { storage } from './services/local'
@@ -39,10 +39,10 @@ const COOLDOWN = 3000 //ms
 
 function App() {
     const [channels, setChannels] = useState<Channel[]>([])
-    const [sounds, setSounds] = useState<string[]>([])
     const [search, setSearch] = useState<string>('')
     const [buttonsDisabled, setButtonsDisabled] = useState()
-    const [favorites, setFavorites] = useState<string[]>([])
+    const [sounds, setSounds] = useState<Sound[]>([])
+    const [favorites, setFavorites] = useState<Sound[]>([])
 
     useEffect(() => {
         const storedFavorites = storage.get('favorites')
@@ -55,31 +55,33 @@ function App() {
 
     useEffect(() => {
         getChannels().then(({ data }) => setChannels(data))
-        getSounds().then(({ data }) => setSounds(data))
+        getSounds().then(({ data }) => {
+            setSounds(data)
+        })
     }, [setChannels, setSounds])
 
-    const filterBySearch = (sound: string) =>
-        !search || sound.toLowerCase().includes(search.toLowerCase())
+    const filterBySearch = (sound: Sound) =>
+        !search || sound.name.toLowerCase().includes(search.toLowerCase())
 
-    const onClick = (sound: string) => {
+    const onClick = (sound: Sound) => {
         playSound(sound)
         setButtonsDisabled(true)
         setTimeout(() => setButtonsDisabled(false), COOLDOWN)
     }
 
-    const addFavorite = (sound: string) => {
+    const addFavorite = (sound: Sound) => {
         const newFavorites = [...favorites, sound]
         setFavorites(newFavorites)
         storage.set('favorites', newFavorites)
     }
-    const removeFavorite = (sound: string) => {
-        console.log(sound)
-        const newFavorites = favorites.filter((s) => s !== sound)
+    const removeFavorite = (sound: Sound) => {
+        const newFavorites = favorites.filter((s) => s.id !== sound.id)
         setFavorites(newFavorites)
         storage.set('favorites', newFavorites)
     }
 
-    const notInFavorites = (sound: string) => !favorites.includes(sound)
+    const notInFavorites = (sound: Sound) =>
+        !favorites.map(({ id }) => id).includes(sound.id)
 
     return (
         <>
@@ -98,8 +100,7 @@ function App() {
                             key={`${sound}${index}`}
                             disabled={buttonsDisabled}
                             onFavorite={removeFavorite}
-                            favText="Unfav"
-                            name={sound}
+                            sound={sound}
                             onClick={() => onClick(sound)}
                         />
                     ))}
@@ -114,8 +115,7 @@ function App() {
                                 key={`${sound}${index}`}
                                 disabled={buttonsDisabled}
                                 onFavorite={addFavorite}
-                                favText="favorite"
-                                name={sound}
+                                sound={sound}
                                 onClick={() => onClick(sound)}
                             />
                         ))}
