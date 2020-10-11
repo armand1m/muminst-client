@@ -1,3 +1,3 @@
 export type Channel = {
-    name: string
-}
+  name: string;
+};

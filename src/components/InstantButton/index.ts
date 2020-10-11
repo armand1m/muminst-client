@@ -1,1 +1,1 @@
-export { InstantButton } from './InstantButton'
+export { InstantButton } from './InstantButton';
