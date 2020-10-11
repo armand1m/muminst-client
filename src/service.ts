@@ -1,15 +1,15 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_API_URL
+const baseURL = process.env.REACT_APP_API_URL;
 
 export type Sound = {
-    name: string
-    id: string
-}
+  name: string;
+  id: string;
+};
 
-const client = axios.create({ baseURL })
+const client = axios.create({ baseURL });
 
-export const getChannels = () => client.get('channels')
-export const getSounds = () => client.get<Sound[]>('sounds')
+export const getChannels = () => client.get('channels');
+export const getSounds = () => client.get<Sound[]>('sounds');
 export const playSound = (sound: Sound) =>
-    client.post('play-sound', { soundId: sound.id })
+  client.post('play-sound', { soundId: sound.id });
