@@ -6,6 +6,9 @@ export const useFileUploadState = () => {
 
   const removeFile = (file: File) => {
     const nextState = files.filter((f) => f.name !== file.name);
+    if (nextState.length === 0) {
+      setProgress(undefined);
+    }
     setFiles(nextState);
   };
 

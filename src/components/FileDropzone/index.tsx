@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
-import { useDropzone, DropzoneRootProps } from 'react-dropzone';
 import styled from '@emotion/styled';
-import { Button, Close, Flex, Grid, Progress, Text } from 'theme-ui';
 import { AxiosRequestConfig } from 'axios';
+import { useDropzone, DropzoneRootProps } from 'react-dropzone';
+import { Button, Close, Flex, Grid, Progress, Text } from 'theme-ui';
 import { useFileUploadState } from 'features/upload/useFileUploadState';
 import { AsyncState } from 'react-use/lib/useAsync';
 import { UploadResponse } from 'features/api/useMuminstApi';
@@ -71,7 +71,7 @@ export const FileDropzone: React.FC<Props> = ({
   });
 
   return (
-    <Grid gap="12px">
+    <Grid gap={2}>
       <Container {...getRootProps()}>
         <input {...getInputProps()} />
         {isDragActive ? (
@@ -131,8 +131,6 @@ export const FileDropzone: React.FC<Props> = ({
           <Text>{Math.trunc(progress * 100)}%</Text>
         </>
       )}
-
-      {progress === 1 && <Text>Upload completed</Text>}
 
       {files.length > 0 && (
         <Flex sx={{ justifyContent: 'flex-end' }}>

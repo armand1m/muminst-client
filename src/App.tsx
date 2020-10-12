@@ -67,19 +67,14 @@ export function App() {
   return (
     <Centered>
       <Grid
-        gap={'24px'}
+        gap={3}
         columns={['minmax(0, 1fr)', 'minmax(0, 1fr)', '720px']}
         sx={{ padding: 4 }}>
         <Centered>
           <PageHeading>Muminst</PageHeading>
         </Centered>
 
-        <Box>
-          <FileDropzone
-            uploadState={upload}
-            onUpload={triggerUpload}
-          />
-        </Box>
+        <FileDropzone uploadState={upload} onUpload={triggerUpload} />
 
         <AsyncResource state={channels} fallback={<Loader />}>
           {(mumbleChannels) => (
