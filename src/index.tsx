@@ -5,6 +5,7 @@ import { App } from './App';
 import { getButtonUrl } from './features/buttons/getButtonUrl';
 import { theme } from './features/theme';
 import { CSSBaseline } from './components/CSSBaseline';
+import { ToggleColorModeButton } from 'components/ToggleColorModeButton';
 
 /**
  * Cache button images before rendering
@@ -17,6 +18,7 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <CSSBaseline />
       <App />
+      <ToggleColorModeButton />
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

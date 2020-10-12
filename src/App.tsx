@@ -37,14 +37,15 @@ const Loader = () => (
 
 const FetchSoundsFailed: React.FC<FallbackProps> = ({
   resetErrorBoundary,
-}) => {
-  return (
-    <Centered sx={{ flexDirection: 'column' }}>
+}) => (
+  <Centered sx={{ flexDirection: 'column' }}>
+    <Grid gap={2}>
       <Text>Failed to fetch sounds.</Text>
       <Button onClick={resetErrorBoundary}>Retry</Button>
-    </Centered>
-  );
-};
+    </Grid>
+  </Centered>
+);
+
 export function App() {
   const { search, setSearch, matchSearch } = useSearch();
   const [isLocked, lock] = useLock();
@@ -74,7 +75,8 @@ export function App() {
       <Grid
         gap={3}
         columns={['minmax(0, 1fr)', 'minmax(0, 1fr)', '720px']}
-        sx={{ padding: 4 }}>
+        padding={4}
+        paddingTop={5}>
         <Centered>
           <PageHeading>Muminst</PageHeading>
         </Centered>
