@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { Sound } from 'features/api/useMuminstApi';
 import { getButtonUrl } from '../../constants';
-import { Sound } from '../../service';
 
 const Container = styled.div`
   display: flex;
@@ -9,6 +9,7 @@ const Container = styled.div`
   align-items: center;
   position: relative;
 `;
+
 const Button = styled.button<{ color: string }>`
   width: 94px;
   height: 89px;
@@ -18,9 +19,7 @@ const Button = styled.button<{ color: string }>`
   background-image: url(${getButtonUrl('normal')});
   cursor: pointer;
   background-color: ${({ color }) => color};
-
   transition: opacity 0.15s;
-
   &:disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -29,6 +28,7 @@ const Button = styled.button<{ color: string }>`
     background-image: url(${getButtonUrl('pressed')});
   }
 `;
+
 const Text = styled.div`
   font-size: 16px;
   margin-top: 7px;
@@ -36,25 +36,25 @@ const Text = styled.div`
   text-align: center;
 `;
 
-const ButtonsWrapper = styled.div`
+const ButtonWrapper = styled.div`
   padding: 15px 20px;
   width: 100px;
 `;
 
+const hashCode = (str: string) =>
+  str
+    .split('')
+    .reduce(
+      (hash, _, i) => str.charCodeAt(i) + ((hash << 5) - hash),
+      0
+    );
+
+const intToRGB = (i: number) => {
+  const c = (i & 0x00ffffff).toString(16).toUpperCase();
+  return '#' + ('00000'.substring(0, 6 - c.length) + c);
+};
+
 const nameToRgb = (name: string) => {
-  const hashCode = (str: string) =>
-    str
-      .split('')
-      .reduce(
-        (hash, _, i) => str.charCodeAt(i) + ((hash << 5) - hash),
-        0
-      );
-
-  const intToRGB = (i: number) => {
-    const c = (i & 0x00ffffff).toString(16).toUpperCase();
-    return '#' + ('00000'.substring(0, 6 - c.length) + c);
-  };
-
   return intToRGB(hashCode(name));
 };
 
@@ -71,7 +71,7 @@ export const InstantButton = ({
   disabled,
   onFavorite,
 }: Props) => (
-  <ButtonsWrapper>
+  <ButtonWrapper>
     <Container>
       <Button
         disabled={disabled}
@@ -90,5 +90,5 @@ export const InstantButton = ({
         +
       </button>
     </Container>
-  </ButtonsWrapper>
+  </ButtonWrapper>
 );

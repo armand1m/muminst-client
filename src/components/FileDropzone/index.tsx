@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDropzone, DropzoneRootProps } from 'react-dropzone';
 import styled from '@emotion/styled';
+import { Button, Flex, Grid } from 'theme-ui';
 
 const getColor = (props: DropzoneRootProps) => {
   if (props.isDragAccept) {
@@ -46,7 +47,7 @@ export const FileDropzone: React.FC<Props> = ({ onUpload }) => {
   });
 
   return (
-    <>
+    <Grid gap="12px">
       <Container {...getRootProps()}>
         <input {...getInputProps()} />
         {isDragActive ? (
@@ -64,13 +65,16 @@ export const FileDropzone: React.FC<Props> = ({ onUpload }) => {
         </li>
       ))}
 
-      <button
-        disabled={acceptedFiles.length === 0}
-        onClick={(e) => {
-          onUpload(acceptedFiles);
-        }}>
-        Upload
-      </button>
-    </>
+      {acceptedFiles.length > 0 && (
+        <Flex sx={{ justifyContent: 'flex-end' }}>
+          <Button
+            onClick={(e) => {
+              onUpload(acceptedFiles);
+            }}>
+            Upload
+          </Button>
+        </Flex>
+      )}
+    </Grid>
   );
 };

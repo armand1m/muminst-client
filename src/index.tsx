@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { ThemeProvider } from 'theme-ui';
 import dotenv from 'dotenv';
+import { App } from './App';
 import { getButtonUrl } from './constants';
+import { theme } from './features/theme';
+import { CSSBaseline } from './components/CSSBaseline';
 
 dotenv.config();
 
@@ -21,7 +24,10 @@ const imagesToCache = [
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <CSSBaseline />
+      <App />
+    </ThemeProvider>
     <Cache imagesUrls={imagesToCache} />
   </React.StrictMode>,
   document.getElementById('root')
