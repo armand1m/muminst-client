@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { useAsyncFn } from 'react-use';
 
 export interface MumbleChannel {
@@ -41,7 +41,10 @@ export const getSounds = () => client.get<Sound[]>('sounds');
 export const playSound = (sound: Sound) =>
   client.post<void>('play-sound', { soundId: sound.id });
 
-export const uploadFiles = (files: File[]) => {
+export const uploadFiles = (
+  files: File[],
+  onUploadProgress: AxiosRequestConfig['onUploadProgress']
+) => {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append(file.name, file);
@@ -51,6 +54,7 @@ export const uploadFiles = (files: File[]) => {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
+    onUploadProgress,
   });
 };
 
@@ -66,8 +70,11 @@ export const useMuminstApi = () => {
   });
 
   const [upload, triggerUpload] = useAsyncFn(
-    async (files: File[]) => {
-      const response = await uploadFiles(files);
+    async (
+      files: File[],
+      onUploadProgress: AxiosRequestConfig['onUploadProgress']
+    ) => {
+      const response = await uploadFiles(files, onUploadProgress);
 
       if (response.data.failed.length) {
         alert(

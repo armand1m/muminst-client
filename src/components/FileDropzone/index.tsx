@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone, DropzoneRootProps } from 'react-dropzone';
 import styled from '@emotion/styled';
-import { Button, Flex, Grid } from 'theme-ui';
+import { Button, Close, Flex, Grid, Progress, Text } from 'theme-ui';
+import { AxiosRequestConfig } from 'axios';
 
 const getColor = (props: DropzoneRootProps) => {
   if (props.isDragAccept) {
@@ -30,49 +31,95 @@ const Container = styled.div<DropzoneRootProps>`
   color: #bdbdbd;
   outline: none;
   transition: border 0.24s ease-in-out;
+  cursor: pointer;
 `;
 
 interface Props {
-  onUpload: (files: File[]) => void;
+  onUpload: (
+    files: File[],
+    onUploadProgress: AxiosRequestConfig['onUploadProgress']
+  ) => void;
 }
 
 export const FileDropzone: React.FC<Props> = ({ onUpload }) => {
-  const {
-    acceptedFiles,
-    getRootProps,
-    getInputProps,
-    isDragActive,
-  } = useDropzone({
+  const [files, setFiles] = useState<File[]>([]);
+  const [progress, setProgress] = useState<number>();
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setFiles(acceptedFiles);
+    setProgress(undefined);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: 'audio/*',
+    onDrop,
   });
+
+  const removeFile = (file: File) => {
+    const nextState = files.filter((f) => f.name !== file.name);
+    setFiles(nextState);
+  };
+
+  const reset = () => {
+    setFiles([]);
+    setProgress(undefined);
+  };
 
   return (
     <Grid gap="12px">
       <Container {...getRootProps()}>
         <input {...getInputProps()} />
         {isDragActive ? (
-          <p>Drop the files here ...</p>
+          <Text>Drop the files here...</Text>
         ) : (
-          <p>
+          <Text>
             Drag 'n' drop some files here, or click to select files
-          </p>
+          </Text>
         )}
       </Container>
 
-      {acceptedFiles.map((file) => (
-        <li key={file.name}>
-          {file.name} - {file.size} bytes
-        </li>
-      ))}
+      {files.length > 0 && (
+        <>
+          {files.map((file) => (
+            <Flex
+              key={file.name}
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <Text>
+                {file.name} - {Math.trunc(file.size / 1000)}kb
+              </Text>
+              <Close onClick={() => removeFile(file)} />
+            </Flex>
+          ))}
 
-      {acceptedFiles.length > 0 && (
+          {progress !== undefined && (
+            <>
+              <Progress max={1} value={progress} />
+              <Text>{Math.trunc(progress * 100)}%</Text>
+            </>
+          )}
+
+          {progress === 1 && <Text>Upload completed</Text>}
+        </>
+      )}
+
+      {files.length > 0 && (
         <Flex sx={{ justifyContent: 'flex-end' }}>
-          <Button
-            onClick={(e) => {
-              onUpload(acceptedFiles);
-            }}>
-            Upload
-          </Button>
+          <Grid gap={2} columns={2}>
+            <Button
+              onClick={(_e) => {
+                onUpload(files, (progressEvent) => {
+                  setProgress(
+                    progressEvent.loaded / progressEvent.total
+                  );
+                });
+              }}>
+              Submit
+            </Button>
+            <Button onClick={reset}>Reset</Button>
+          </Grid>
         </Flex>
       )}
     </Grid>
