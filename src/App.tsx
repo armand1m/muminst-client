@@ -92,55 +92,55 @@ export function App() {
           />
         </Box>
 
-        <Box>
-          <Heading as="h2">Favorites</Heading>
-          <ButtonsSection>
-            {favorites.map((sound) => (
-              <InstantButton
-                key={sound.id}
-                sound={sound}
-                disabled={isLocked}
-                isFavorite
-                onFavorite={removeFavorite}
-                onClick={() => onPlay(sound)}
-              />
-            ))}
-          </ButtonsSection>
-        </Box>
+        {favorites.length > 0 && (
+          <Box>
+            <Heading as="h2">Favorites</Heading>
+            <ButtonsSection>
+              {favorites.map((sound) => (
+                <InstantButton
+                  key={sound.id}
+                  sound={sound}
+                  disabled={isLocked}
+                  isFavorite
+                  onFavorite={removeFavorite}
+                  onClick={() => onPlay(sound)}
+                />
+              ))}
+            </ButtonsSection>
+          </Box>
+        )}
 
         <Box>
           <Heading as="h2">All</Heading>
-          <ButtonsSection>
-            <ErrorBoundary
-              FallbackComponent={FetchSoundsFailed}
-              onReset={fetchSounds}>
-              <AsyncResource state={sounds} fallback={<Loader />}>
-                {(allSounds) => {
-                  const filtered = allSounds
-                    .filter((sound) => !hasFavorite(sound))
-                    .filter(matchSearch);
+          <ErrorBoundary
+            FallbackComponent={FetchSoundsFailed}
+            onReset={fetchSounds}>
+            <AsyncResource state={sounds} fallback={<Loader />}>
+              {(allSounds) => {
+                const filtered = allSounds
+                  .filter((sound) => !hasFavorite(sound))
+                  .filter(matchSearch);
 
-                  if (filtered.length === 0) {
-                    return <Text>No results for "{search}"</Text>;
-                  }
+                if (filtered.length === 0) {
+                  return <Text>No results for "{search}"</Text>;
+                }
 
-                  return (
-                    <>
-                      {filtered.map((sound) => (
-                        <InstantButton
-                          key={sound.id}
-                          disabled={isLocked}
-                          onFavorite={addFavorite}
-                          sound={sound}
-                          onClick={() => onPlay(sound)}
-                        />
-                      ))}
-                    </>
-                  );
-                }}
-              </AsyncResource>
-            </ErrorBoundary>
-          </ButtonsSection>
+                return (
+                  <ButtonsSection>
+                    {filtered.map((sound) => (
+                      <InstantButton
+                        key={sound.id}
+                        disabled={isLocked}
+                        onFavorite={addFavorite}
+                        sound={sound}
+                        onClick={() => onPlay(sound)}
+                      />
+                    ))}
+                  </ButtonsSection>
+                );
+              }}
+            </AsyncResource>
+          </ErrorBoundary>
         </Box>
       </Grid>
     </Centered>

@@ -74,11 +74,17 @@ export const useMuminstApi = () => {
       files: File[],
       onUploadProgress: AxiosRequestConfig['onUploadProgress']
     ) => {
-      const response = await uploadFiles(files, onUploadProgress);
+      const { data } = await uploadFiles(files, onUploadProgress);
 
-      fetchSounds();
+      /**
+       * Only refetch sounds if there
+       * are successful uploads
+       */
+      if (data.successful.length > 0) {
+        fetchSounds();
+      }
 
-      return response.data;
+      return data;
     },
     []
   );

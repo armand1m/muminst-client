@@ -134,9 +134,9 @@ export const FileDropzone: React.FC<Props> = ({
         </>
       )}
 
-      {uploadState.error !== undefined && (
+      {!uploadState.loading && uploadState.error !== undefined && (
         <Text color="red">
-          Failed to upload audios. Reason: {uploadState.error.message}
+          Failed to upload files. Reason: {uploadState.error.message}
         </Text>
       )}
 
