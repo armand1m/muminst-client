@@ -36,7 +36,6 @@ const Loader = () => (
 );
 
 const FetchSoundsFailed: React.FC<FallbackProps> = ({
-  error,
   resetErrorBoundary,
 }) => {
   return (
