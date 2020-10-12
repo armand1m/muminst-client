@@ -33,6 +33,7 @@ const Container = styled(Flex)<DropzoneRootProps>`
   outline: none;
   transition: border 0.24s ease-in-out;
   cursor: pointer;
+  text-align: center;
 `;
 
 interface Props {

@@ -8,7 +8,6 @@ import {
   Heading,
   Input,
   Label,
-  Select,
   Spinner,
   Text,
 } from 'theme-ui';
@@ -45,17 +44,11 @@ export function App() {
   ] = useFavorites();
 
   const {
-    state: { channels, sounds, upload },
-    handlers: {
-      fetchChannels,
-      fetchSounds,
-      triggerUpload,
-      playSound,
-    },
+    state: { sounds, upload },
+    handlers: { playSound, fetchSounds, triggerUpload },
   } = useMuminstApi();
 
   useEffectOnce(() => {
-    fetchChannels();
     fetchSounds();
   });
 
@@ -75,19 +68,6 @@ export function App() {
         </Centered>
 
         <FileDropzone uploadState={upload} onUpload={triggerUpload} />
-
-        <AsyncResource state={channels} fallback={<Loader />}>
-          {(mumbleChannels) => (
-            <Box>
-              <Label htmlFor="channel">Channel</Label>
-              <Select id="channel">
-                {mumbleChannels.map((channel) => (
-                  <option key={channel.id}>{channel.name}</option>
-                ))}
-              </Select>
-            </Box>
-          )}
-        </AsyncResource>
 
         <Box>
           <Label htmlFor="search">Search</Label>
