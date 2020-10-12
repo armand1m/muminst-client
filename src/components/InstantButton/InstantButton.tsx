@@ -2,6 +2,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { Sound } from 'features/api/useMuminstApi';
 import { getButtonUrl } from '../../constants';
+import { IconButton } from 'theme-ui';
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
 const Container = styled.div`
   display: flex;
@@ -37,7 +39,7 @@ const Text = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  padding: 15px 20px;
+  margin: 15px 20px;
   width: 100px;
 `;
 
@@ -58,17 +60,19 @@ const nameToRgb = (name: string) => {
   return intToRGB(hashCode(name));
 };
 
-type Props = {
+interface Props {
   sound: Sound;
   disabled: boolean;
+  isFavorite: boolean;
   onClick: () => void;
   onFavorite: (sound: Sound) => void;
-};
+}
 
 export const InstantButton = ({
   sound,
   onClick,
   disabled,
+  isFavorite,
   onFavorite,
 }: Props) => (
   <ButtonWrapper>
@@ -80,15 +84,24 @@ export const InstantButton = ({
       />
       <Text>{sound.name}</Text>
 
-      <button
-        style={{
+      <IconButton
+        sx={{
           position: 'absolute',
           top: 0,
           right: 0,
+          color: 'text',
+          bg: 'secondary',
         }}
-        onClick={() => onFavorite(sound)}>
-        +
-      </button>
+        onClick={() => onFavorite(sound)}
+        aria-label={
+          isFavorite ? 'Remove from favorite' : 'Add to favorite'
+        }>
+        {isFavorite ? (
+          <AiFillStar color="currentColor" />
+        ) : (
+          <AiOutlineStar color="currentColor" />
+        )}
+      </IconButton>
     </Container>
   </ButtonWrapper>
 );

@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from '@emotion/styled';
 import { useEffectOnce } from 'react-use';
 import {
   Box,
@@ -11,17 +12,16 @@ import {
   Spinner,
   Text,
 } from 'theme-ui';
-import styled from '@emotion/styled';
 
+import { Centered } from 'components/Centered';
 import { PageHeading } from 'components/PageHeading';
 import { FileDropzone } from 'components/FileDropzone';
 import { InstantButton } from 'components/InstantButton';
 import { AsyncResource } from 'components/AsyncResource';
 import { useFavorites } from 'features/favorites/useFavorites';
 import { useLock } from 'features/lock/useLock';
-import { Sound, useMuminstApi } from 'features/api/useMuminstApi';
 import { useSearch } from 'features/search/useSearch';
-import { Centered } from 'components/Centered';
+import { Sound, useMuminstApi } from 'features/api/useMuminstApi';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -45,7 +45,7 @@ export function App() {
   ] = useFavorites();
 
   const {
-    state: { channels, sounds },
+    state: { channels, sounds, upload },
     handlers: {
       fetchChannels,
       fetchSounds,
@@ -75,7 +75,10 @@ export function App() {
         </Centered>
 
         <Box>
-          <FileDropzone onUpload={triggerUpload} />
+          <FileDropzone
+            uploadState={upload}
+            onUpload={triggerUpload}
+          />
         </Box>
 
         <AsyncResource state={channels} fallback={<Loader />}>
@@ -107,6 +110,7 @@ export function App() {
               <InstantButton
                 key={sound.id}
                 disabled={isLocked}
+                isFavorite
                 onFavorite={removeFavorite}
                 sound={sound}
                 onClick={() => onPlay(sound)}
@@ -133,6 +137,7 @@ export function App() {
                     {filtered.map((sound) => (
                       <InstantButton
                         key={sound.id}
+                        isFavorite={false}
                         disabled={isLocked}
                         onFavorite={addFavorite}
                         sound={sound}

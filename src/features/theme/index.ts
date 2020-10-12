@@ -133,7 +133,12 @@ export const theme = {
     spinner: {
       color: 'text',
     },
-    button: {
+  },
+  buttons: {
+    icon: {
+      cursor: 'pointer',
+    },
+    primary: {
       color: 'background',
       bg: 'text',
       '&:focus': {
@@ -143,8 +148,6 @@ export const theme = {
       fontWeight: 'bold',
       cursor: 'pointer',
     },
-  },
-  buttons: {
     close: {
       cursor: 'pointer',
       '&:focus': {

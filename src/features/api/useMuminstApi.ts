@@ -51,10 +51,10 @@ export const uploadFiles = (
   });
 
   return client.post<UploadResponse>('upload', formData, {
+    onUploadProgress,
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-    onUploadProgress,
   });
 };
 
@@ -75,14 +75,6 @@ export const useMuminstApi = () => {
       onUploadProgress: AxiosRequestConfig['onUploadProgress']
     ) => {
       const response = await uploadFiles(files, onUploadProgress);
-
-      if (response.data.failed.length) {
-        alert(
-          `${response.data.failed
-            .map((err) => err.reason)
-            .join(', ')}`
-        );
-      }
 
       fetchSounds();
 

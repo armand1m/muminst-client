@@ -25,5 +25,5 @@ export function AsyncResource<T>({
     return children(value);
   }
 
-  return fallback;
+  return null;
 }
