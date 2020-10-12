@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { IconButton } from 'theme-ui';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { Sound } from 'features/api/useMuminstApi';
-import { getButtonUrl } from '../../constants';
+import { getButtonUrl } from 'features/buttons/getButtonUrl';
 
 const Container = styled.div`
   display: flex;

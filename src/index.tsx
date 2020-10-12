@@ -1,26 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'theme-ui';
-import dotenv from 'dotenv';
 import { App } from './App';
-import { getButtonUrl } from './constants';
+import { getButtonUrl } from './features/buttons/getButtonUrl';
 import { theme } from './features/theme';
 import { CSSBaseline } from './components/CSSBaseline';
 
-dotenv.config();
-
-const Cache = ({ imagesUrls }: { imagesUrls: string[] }) => (
-  <>
-    {imagesUrls.map((url) => (
-      <img src={url} style={{ display: 'none' }} key={url} alt="" />
-    ))}
-  </>
-);
-
-const imagesToCache = [
-  getButtonUrl('normal'),
-  getButtonUrl('pressed'),
-];
+/**
+ * Cache button images before rendering
+ */
+new Image().src = getButtonUrl('normal');
+new Image().src = getButtonUrl('pressed');
 
 ReactDOM.render(
   <React.StrictMode>
@@ -28,7 +18,6 @@ ReactDOM.render(
       <CSSBaseline />
       <App />
     </ThemeProvider>
-    <Cache imagesUrls={imagesToCache} />
   </React.StrictMode>,
   document.getElementById('root')
 );
