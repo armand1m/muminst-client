@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { useEffectOnce } from 'react-use';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import {
   Box,
+  Button,
   Flex,
   Grid,
   Heading,
@@ -17,9 +19,9 @@ import { PageHeading } from 'components/PageHeading';
 import { FileDropzone } from 'components/FileDropzone';
 import { InstantButton } from 'components/InstantButton';
 import { AsyncResource } from 'components/AsyncResource';
-import { useFavorites } from 'features/favorites/useFavorites';
 import { useLock } from 'features/lock/useLock';
 import { useSearch } from 'features/search/useSearch';
+import { useFavorites } from 'features/favorites/useFavorites';
 import { Sound, useMuminstApi } from 'features/api/useMuminstApi';
 
 const ButtonsSection = styled(Flex)`
@@ -33,6 +35,17 @@ const Loader = () => (
   </Centered>
 );
 
+const FetchSoundsFailed: React.FC<FallbackProps> = ({
+  error,
+  resetErrorBoundary,
+}) => {
+  return (
+    <Centered sx={{ flexDirection: 'column' }}>
+      <Text>Failed to fetch sounds.</Text>
+      <Button onClick={resetErrorBoundary}>Retry</Button>
+    </Centered>
+  );
+};
 export function App() {
   const { search, setSearch, matchSearch } = useSearch();
   const [isLocked, lock] = useLock();
@@ -84,10 +97,10 @@ export function App() {
             {favorites.map((sound) => (
               <InstantButton
                 key={sound.id}
+                sound={sound}
                 disabled={isLocked}
                 isFavorite
                 onFavorite={removeFavorite}
-                sound={sound}
                 onClick={() => onPlay(sound)}
               />
             ))}
@@ -97,32 +110,35 @@ export function App() {
         <Box>
           <Heading as="h2">All</Heading>
           <ButtonsSection>
-            <AsyncResource state={sounds} fallback={<Loader />}>
-              {(allSounds) => {
-                const filtered = allSounds
-                  .filter((sound) => !hasFavorite(sound))
-                  .filter(matchSearch);
+            <ErrorBoundary
+              FallbackComponent={FetchSoundsFailed}
+              onReset={fetchSounds}>
+              <AsyncResource state={sounds} fallback={<Loader />}>
+                {(allSounds) => {
+                  const filtered = allSounds
+                    .filter((sound) => !hasFavorite(sound))
+                    .filter(matchSearch);
 
-                if (filtered.length === 0) {
-                  return <Text>No results for "{search}"</Text>;
-                }
+                  if (filtered.length === 0) {
+                    return <Text>No results for "{search}"</Text>;
+                  }
 
-                return (
-                  <>
-                    {filtered.map((sound) => (
-                      <InstantButton
-                        key={sound.id}
-                        isFavorite={false}
-                        disabled={isLocked}
-                        onFavorite={addFavorite}
-                        sound={sound}
-                        onClick={() => onPlay(sound)}
-                      />
-                    ))}
-                  </>
-                );
-              }}
-            </AsyncResource>
+                  return (
+                    <>
+                      {filtered.map((sound) => (
+                        <InstantButton
+                          key={sound.id}
+                          disabled={isLocked}
+                          onFavorite={addFavorite}
+                          sound={sound}
+                          onClick={() => onPlay(sound)}
+                        />
+                      ))}
+                    </>
+                  );
+                }}
+              </AsyncResource>
+            </ErrorBoundary>
           </ButtonsSection>
         </Box>
       </Grid>

@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import styled from '@emotion/styled';
 import { AxiosRequestConfig } from 'axios';
+import { AsyncState } from 'react-use/lib/useAsync';
 import { useDropzone, DropzoneRootProps } from 'react-dropzone';
 import { Button, Close, Flex, Grid, Progress, Text } from 'theme-ui';
-import { useFileUploadState } from 'features/upload/useFileUploadState';
-import { AsyncState } from 'react-use/lib/useAsync';
 import { UploadResponse } from 'features/api/useMuminstApi';
+import { useFileUploadState } from 'features/upload/useFileUploadState';
 
 const getColor = (props: DropzoneRootProps) => {
   if (props.isDragAccept) {
@@ -97,6 +97,7 @@ export const FileDropzone: React.FC<Props> = ({
             const fileInfo = `${file.name} - ${Math.trunc(
               file.size / 1000
             )}kb`;
+
             let text = <Text>{fileInfo}</Text>;
 
             if (error) {
@@ -131,6 +132,12 @@ export const FileDropzone: React.FC<Props> = ({
           <Progress max={1} value={progress} />
           <Text>{Math.trunc(progress * 100)}%</Text>
         </>
+      )}
+
+      {uploadState.error !== undefined && (
+        <Text color="red">
+          Failed to upload audios. Reason: {uploadState.error.message}
+        </Text>
       )}
 
       {files.length > 0 && (

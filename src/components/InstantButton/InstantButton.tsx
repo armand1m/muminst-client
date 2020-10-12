@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Sound } from 'features/api/useMuminstApi';
-import { getButtonUrl } from '../../constants';
 import { IconButton } from 'theme-ui';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import { Sound } from 'features/api/useMuminstApi';
+import { getButtonUrl } from '../../constants';
 
 const Container = styled.div`
   display: flex;
@@ -63,7 +63,7 @@ const nameToRgb = (name: string) => {
 interface Props {
   sound: Sound;
   disabled: boolean;
-  isFavorite: boolean;
+  isFavorite?: boolean;
   onClick: () => void;
   onFavorite: (sound: Sound) => void;
 }

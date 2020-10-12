@@ -7,12 +7,10 @@ interface AsyncResourceProps<T> {
 }
 
 export function AsyncResource<T>({
-  state,
+  state: { loading, error, value },
   fallback,
   children,
 }: AsyncResourceProps<T>) {
-  const { loading, error, value } = state;
-
   if (loading) {
     return fallback;
   }
