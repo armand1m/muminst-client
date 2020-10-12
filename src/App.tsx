@@ -60,15 +60,19 @@ function App() {
     return data;
   });
 
-  const [uploadState, triggerUpload] = useAsyncFn(
-    async (files: File[]) => {
-      const response = await uploadFiles(files);
-      return response.data;
-    },
-    []
-  );
+  const [, triggerUpload] = useAsyncFn(async (files: File[]) => {
+    const response = await uploadFiles(files);
 
-  console.log(uploadState);
+    if (response.data.failed.length) {
+      alert(
+        `${response.data.failed.map((e: any) => e.reason).join(', ')}`
+      );
+    }
+
+    fetchSounds();
+
+    return response.data;
+  }, []);
 
   useEffect(() => {
     const storedFavorites = storage.get('favorites');
