@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { Sound } from 'features/api/useMuminstApi';
 import { getButtonUrl } from '../../constants';
-import { Sound } from '../../service';
+import { IconButton } from 'theme-ui';
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
 const Container = styled.div`
   display: flex;
@@ -9,6 +11,7 @@ const Container = styled.div`
   align-items: center;
   position: relative;
 `;
+
 const Button = styled.button<{ color: string }>`
   width: 94px;
   height: 89px;
@@ -18,9 +21,7 @@ const Button = styled.button<{ color: string }>`
   background-image: url(${getButtonUrl('normal')});
   cursor: pointer;
   background-color: ${({ color }) => color};
-
   transition: opacity 0.15s;
-
   &:disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -29,6 +30,7 @@ const Button = styled.button<{ color: string }>`
     background-image: url(${getButtonUrl('pressed')});
   }
 `;
+
 const Text = styled.div`
   font-size: 16px;
   margin-top: 7px;
@@ -36,42 +38,44 @@ const Text = styled.div`
   text-align: center;
 `;
 
-const ButtonsWrapper = styled.div`
-  padding: 15px 20px;
+const ButtonWrapper = styled.div`
+  margin: 15px 20px;
   width: 100px;
 `;
 
+const hashCode = (str: string) =>
+  str
+    .split('')
+    .reduce(
+      (hash, _, i) => str.charCodeAt(i) + ((hash << 5) - hash),
+      0
+    );
+
+const intToRGB = (i: number) => {
+  const c = (i & 0x00ffffff).toString(16).toUpperCase();
+  return '#' + ('00000'.substring(0, 6 - c.length) + c);
+};
+
 const nameToRgb = (name: string) => {
-  const hashCode = (str: string) =>
-    str
-      .split('')
-      .reduce(
-        (hash, _, i) => str.charCodeAt(i) + ((hash << 5) - hash),
-        0
-      );
-
-  const intToRGB = (i: number) => {
-    const c = (i & 0x00ffffff).toString(16).toUpperCase();
-    return '#' + ('00000'.substring(0, 6 - c.length) + c);
-  };
-
   return intToRGB(hashCode(name));
 };
 
-type Props = {
+interface Props {
   sound: Sound;
   disabled: boolean;
+  isFavorite: boolean;
   onClick: () => void;
   onFavorite: (sound: Sound) => void;
-};
+}
 
 export const InstantButton = ({
   sound,
   onClick,
   disabled,
+  isFavorite,
   onFavorite,
 }: Props) => (
-  <ButtonsWrapper>
+  <ButtonWrapper>
     <Container>
       <Button
         disabled={disabled}
@@ -80,15 +84,24 @@ export const InstantButton = ({
       />
       <Text>{sound.name}</Text>
 
-      <button
-        style={{
+      <IconButton
+        sx={{
           position: 'absolute',
           top: 0,
           right: 0,
+          color: 'text',
+          bg: 'secondary',
         }}
-        onClick={() => onFavorite(sound)}>
-        +
-      </button>
+        onClick={() => onFavorite(sound)}
+        aria-label={
+          isFavorite ? 'Remove from favorite' : 'Add to favorite'
+        }>
+        {isFavorite ? (
+          <AiFillStar color="currentColor" />
+        ) : (
+          <AiOutlineStar color="currentColor" />
+        )}
+      </IconButton>
     </Container>
-  </ButtonsWrapper>
+  </ButtonWrapper>
 );

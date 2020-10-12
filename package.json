@@ -16,9 +16,11 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.2.0",
+    "react-error-boundary": "^3.0.2",
+    "react-icons": "^3.11.0",
     "react-scripts": "3.4.3",
-    "react-spinners": "^0.9.0",
     "react-use": "^15.3.4",
+    "theme-ui": "^0.3.1",
     "typescript": "~3.7.2"
   },
   "scripts": {
@@ -45,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@types/theme-ui": "^0.3.7",
     "prettier": "^2.1.2"
   }
 }
