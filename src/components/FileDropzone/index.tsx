@@ -79,7 +79,7 @@ export const FileDropzone: React.FC<Props> = ({
           <Text>Drop the files here...</Text>
         ) : (
           <Text>
-            Drag 'n' drop some files here, or click to select files
+            Drag 'n' drop some files here or click to select files
           </Text>
         )}
       </Container>
