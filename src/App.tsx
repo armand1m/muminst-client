@@ -74,7 +74,7 @@ export function App() {
     <Centered>
       <Grid
         gap={3}
-        columns={['minmax(0, 1fr)', 'minmax(0, 1fr)', '720px']}
+        columns={['minmax(0, 1fr)', 'minmax(0, 1fr)']}
         padding={4}
         paddingTop={5}>
         <Centered>
