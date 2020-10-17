@@ -109,6 +109,7 @@ export function App() {
             }>
             <option value="mumble">Mumble</option>
             <option value="discord">Discord</option>
+            <option value="telegram">Telegram</option>
           </Select>
         </Box>
 
