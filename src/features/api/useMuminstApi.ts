@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { useAsyncFn } from 'react-use';
 
-export type ChatClient = 'discord' | 'mumble';
+export type ChatClient = 'discord' | 'mumble' | 'telegram';
 
 export interface MumbleChannel {
   children: object;
