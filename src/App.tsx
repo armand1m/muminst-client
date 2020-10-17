@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { useEffectOnce } from 'react-use';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
@@ -10,6 +10,7 @@ import {
   Heading,
   Input,
   Label,
+  Select,
   Spinner,
   Text,
 } from 'theme-ui';
@@ -22,7 +23,11 @@ import { AsyncResource } from 'components/AsyncResource';
 import { useLock } from 'features/lock/useLock';
 import { useSearch } from 'features/search/useSearch';
 import { useFavorites } from 'features/favorites/useFavorites';
-import { Sound, useMuminstApi } from 'features/api/useMuminstApi';
+import {
+  ChatClient,
+  Sound,
+  useMuminstApi,
+} from 'features/api/useMuminstApi';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -47,6 +52,7 @@ const FetchSoundsFailed: React.FC<FallbackProps> = ({
 );
 
 export function App() {
+  const [chatClient, setChatClient] = useState<ChatClient>('mumble');
   const { search, setSearch, matchSearch } = useSearch();
   const [isLocked, lock] = useLock();
   const [
@@ -66,7 +72,7 @@ export function App() {
   });
 
   const onPlay = (sound: Sound) => {
-    playSound(sound);
+    playSound(chatClient, sound);
     lock();
   };
 
@@ -90,6 +96,20 @@ export function App() {
             value={search}
             onChange={(evt) => setSearch(evt.target.value)}
           />
+        </Box>
+
+        <Box>
+          <Label htmlFor="chat-client">Chat Client</Label>
+          <Select
+            id="chat-client"
+            value={chatClient}
+            defaultValue="mumble"
+            onChange={(evt) =>
+              setChatClient(evt.target.value as ChatClient)
+            }>
+            <option value="mumble">Mumble</option>
+            <option value="discord">Discord</option>
+          </Select>
         </Box>
 
         {favorites.length > 0 && (
