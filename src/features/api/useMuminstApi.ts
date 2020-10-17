@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { useAsyncFn } from 'react-use';
 
+export type ChatClient = 'discord' | 'mumble';
+
 export interface MumbleChannel {
   children: object;
   links: object;
@@ -38,8 +40,12 @@ export const getChannels = () =>
 
 export const getSounds = () => client.get<Sound[]>('sounds');
 
-export const playSound = (sound: Sound) =>
-  client.post<void>('play-sound', { soundId: sound.id });
+export const playSound = (chatClient: ChatClient, sound: Sound) => {
+  return client.post<void>('play-sound', {
+    client: chatClient,
+    soundId: sound.id,
+  });
+};
 
 export const uploadFiles = (
   files: File[],
