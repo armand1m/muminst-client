@@ -74,7 +74,7 @@ export const InstantButton = ({
     sx={{
       width: '100px',
       wordBreak: 'break-all',
-      marginX: ['12px', 3, 4],
+      marginX: ['12px', 3],
       marginY: 3,
     }}>
     <Container>
