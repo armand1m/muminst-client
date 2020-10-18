@@ -70,11 +70,13 @@ export const InstantButton = ({
   isFavorite,
   onFavorite,
 }: Props) => (
-  <Box sx={{
-    width: "100px",
-    wordBreak: "break-all",
-    margin: [1, 2, 3]
-  }}>
+  <Box
+    sx={{
+      width: '100px',
+      wordBreak: 'break-all',
+      marginX: ['12px', 3, 4],
+      marginY: 3,
+    }}>
     <Container>
       <Button
         disabled={disabled}
