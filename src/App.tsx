@@ -52,7 +52,7 @@ const FetchSoundsFailed: React.FC<FallbackProps> = ({
 );
 
 export function App() {
-  const [chatClient, setChatClient] = useState<ChatClient>('browser');
+  const [chatClient, setChatClient] = useState<ChatClient>('mumble');
   const { search, setSearch, matchSearch } = useSearch();
   const [isLocked, lock] = useLock();
   const [
@@ -74,6 +74,10 @@ export function App() {
   const onPlay = (sound: Sound) => {
     playSound(chatClient, sound);
     lock();
+  };
+
+  const onPlayPreview = (sound: Sound) => {
+    playSound('browser', sound);
   };
 
   return (
@@ -119,12 +123,13 @@ export function App() {
             <ButtonsSection>
               {favorites.map((sound) => (
                 <InstantButton
+                  isFavorite
                   key={sound.id}
                   sound={sound}
                   disabled={isLocked}
-                  isFavorite
+                  onClick={onPlay}
                   onFavorite={removeFavorite}
-                  onClick={() => onPlay(sound)}
+                  onPlayPreview={onPlayPreview}
                 />
               ))}
             </ButtonsSection>
@@ -151,10 +156,11 @@ export function App() {
                     {filtered.map((sound) => (
                       <InstantButton
                         key={sound.id}
-                        disabled={isLocked}
-                        onFavorite={addFavorite}
                         sound={sound}
-                        onClick={() => onPlay(sound)}
+                        disabled={isLocked}
+                        onClick={onPlay}
+                        onFavorite={addFavorite}
+                        onPlayPreview={onPlayPreview}
                       />
                     ))}
                   </ButtonsSection>

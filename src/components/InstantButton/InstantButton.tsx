@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Box, IconButton } from 'theme-ui';
+import { Box, Grid, IconButton } from 'theme-ui';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import { BsPlayFill } from 'react-icons/bs';
 import { Sound } from 'features/api/useMuminstApi';
 import { getButtonUrl } from 'features/buttons/getButtonUrl';
 
@@ -59,7 +60,8 @@ interface Props {
   sound: Sound;
   disabled: boolean;
   isFavorite?: boolean;
-  onClick: () => void;
+  onClick: (sound: Sound) => void;
+  onPlayPreview: (sound: Sound) => void;
   onFavorite: (sound: Sound) => void;
 }
 
@@ -68,6 +70,7 @@ export const InstantButton = ({
   onClick,
   disabled,
   isFavorite,
+  onPlayPreview,
   onFavorite,
 }: Props) => (
   <Box
@@ -81,28 +84,44 @@ export const InstantButton = ({
       <Button
         disabled={disabled}
         color={nameToRgb(sound.name)}
-        onClick={onClick}
+        onClick={() => onClick(sound)}
       />
       <Text>{sound.name}</Text>
 
-      <IconButton
+      <Grid
+        gap={2}
         sx={{
           position: 'absolute',
+          alignItems: 'center',
+          justifyContent: 'center',
           top: 0,
-          right: 0,
-          color: 'text',
-          bg: 'secondary',
-        }}
-        onClick={() => onFavorite(sound)}
-        aria-label={
-          isFavorite ? 'Remove from favorite' : 'Add to favorite'
-        }>
-        {isFavorite ? (
-          <AiFillStar color="currentColor" />
-        ) : (
-          <AiOutlineStar color="currentColor" />
-        )}
-      </IconButton>
+          right: -20,
+        }}>
+        <IconButton
+          sx={{
+            color: 'text',
+            bg: 'secondary',
+          }}
+          onClick={() => onFavorite(sound)}
+          aria-label={
+            isFavorite ? 'Remove from favorite' : 'Add to favorite'
+          }>
+          {isFavorite ? (
+            <AiFillStar color="currentColor" />
+          ) : (
+            <AiOutlineStar color="currentColor" />
+          )}
+        </IconButton>
+        <IconButton
+          sx={{
+            color: 'text',
+            bg: 'secondary',
+          }}
+          onClick={() => onPlayPreview(sound)}
+          aria-label="Play sound on the browser">
+          <BsPlayFill color="currentColor" />
+        </IconButton>
+      </Grid>
     </Container>
   </Box>
 );
