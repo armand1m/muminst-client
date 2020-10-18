@@ -1,7 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { useAsyncFn } from 'react-use';
 
-export type ChatClient = 'discord' | 'mumble' | 'telegram';
+export type ChatClient =
+  | 'discord'
+  | 'mumble'
+  | 'telegram'
+  | 'browser';
 
 export interface MumbleChannel {
   children: object;
@@ -15,6 +19,8 @@ export interface MumbleChannel {
 export interface Sound {
   name: string;
   id: string;
+  fileName: string;
+  extension: '.mp3' | '.wav';
 }
 
 export interface FailedUploadResponse {
@@ -41,6 +47,23 @@ export const getChannels = () =>
 export const getSounds = () => client.get<Sound[]>('sounds');
 
 export const playSound = (chatClient: ChatClient, sound: Sound) => {
+  if (chatClient === 'browser') {
+    const url = new URL(
+      `/assets/${sound.fileName}${sound.extension}`,
+      baseURL
+    ).toString();
+    const audio = new Audio(url);
+
+    audio.addEventListener('canplaythrough', (event) => {
+      audio.play();
+    });
+
+    audio.addEventListener('ended', (event) => {
+      audio.pause();
+    });
+    return;
+  }
+
   return client.post<void>('play-sound', {
     client: chatClient,
     soundId: sound.id,

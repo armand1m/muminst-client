@@ -52,7 +52,7 @@ const FetchSoundsFailed: React.FC<FallbackProps> = ({
 );
 
 export function App() {
-  const [chatClient, setChatClient] = useState<ChatClient>('mumble');
+  const [chatClient, setChatClient] = useState<ChatClient>('browser');
   const { search, setSearch, matchSearch } = useSearch();
   const [isLocked, lock] = useLock();
   const [
@@ -103,13 +103,13 @@ export function App() {
           <Select
             id="chat-client"
             value={chatClient}
-            defaultValue="mumble"
             onChange={(evt) =>
               setChatClient(evt.target.value as ChatClient)
             }>
             <option value="mumble">Mumble</option>
             <option value="discord">Discord</option>
             <option value="telegram">Telegram</option>
+            <option value="browser">Browser</option>
           </Select>
         </Box>
 
