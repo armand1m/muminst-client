@@ -81,7 +81,7 @@ export function App() {
       <Grid
         gap={3}
         columns={['minmax(0, 1fr)', 'minmax(0, 1fr)']}
-        padding={4}
+        padding={[3,4]}
         paddingTop={5}>
         <Centered>
           <PageHeading>Muminst</PageHeading>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { IconButton } from 'theme-ui';
+import { Box, IconButton } from 'theme-ui';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { Sound } from 'features/api/useMuminstApi';
 import { getButtonUrl } from 'features/buttons/getButtonUrl';
@@ -38,11 +38,6 @@ const Text = styled.div`
   text-align: center;
 `;
 
-const ButtonWrapper = styled.div`
-  margin: 15px 20px;
-  width: 100px;
-`;
-
 const hashCode = (str: string) =>
   str
     .split('')
@@ -75,7 +70,11 @@ export const InstantButton = ({
   isFavorite,
   onFavorite,
 }: Props) => (
-  <ButtonWrapper>
+  <Box sx={{
+    width: "100px",
+    wordBreak: "break-all",
+    margin: [1, 2, 3]
+  }}>
     <Container>
       <Button
         disabled={disabled}
@@ -103,5 +102,5 @@ export const InstantButton = ({
         )}
       </IconButton>
     </Container>
-  </ButtonWrapper>
+  </Box>
 );
