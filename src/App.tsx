@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { useEffectOnce } from 'react-use';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import slugify from 'slugify';
 import {
   Box,
   Button,
@@ -23,17 +24,14 @@ import { AsyncResource } from 'components/AsyncResource';
 import { useLock } from 'features/lock/useLock';
 import { useSearch } from 'features/search/useSearch';
 import { useFavorites } from 'features/favorites/useFavorites';
-import {
-  RecordButton,
-  UploadRecordForm,
-} from 'features/recording/UploadRecordForm';
+import { RecordButton } from 'features/recording/RecordButton';
+import { UploadRecordForm } from 'features/recording/UploadRecordForm';
 import { useAudioRecorder } from 'features/recording/useAudioRecorder';
 import {
   Sound,
   ChatClient,
   useMuminstApi,
 } from 'features/api/useMuminstApi';
-import slugify from 'slugify';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -113,25 +111,31 @@ export function App() {
           )}
 
           {recorder.state.url !== undefined && (
-            <UploadRecordForm
-              onSubmit={(values) => {
-                if (!recorder.state.blob) {
-                  return;
-                }
-
-                const filename = slugify(values.soundName) + '.webm';
-                const file = new File(
-                  [recorder.state.blob],
-                  filename,
-                  {
-                    type: 'audio/webm',
+            <Box padding={2}>
+              <UploadRecordForm
+                onSubmit={(values) => {
+                  if (!recorder.state.blob) {
+                    return;
                   }
-                );
 
-                console.log(file);
-                triggerUpload([file], (event) => console.log(event));
-              }}
-            />
+                  const filename =
+                    slugify(values.soundName) + '.webm';
+
+                  const file = new File(
+                    [recorder.state.blob],
+                    filename,
+                    {
+                      type: 'audio/webm',
+                    }
+                  );
+
+                  triggerUpload([file], (event) =>
+                    console.log(event)
+                  );
+                  recorder.handlers.reset();
+                }}
+              />
+            </Box>
           )}
         </Centered>
 
