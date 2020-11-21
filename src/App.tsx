@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { useEffectOnce } from 'react-use';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import slugify from 'slugify';
 import {
   Box,
   Button,
@@ -23,9 +24,12 @@ import { AsyncResource } from 'components/AsyncResource';
 import { useLock } from 'features/lock/useLock';
 import { useSearch } from 'features/search/useSearch';
 import { useFavorites } from 'features/favorites/useFavorites';
+import { RecordButton } from 'features/recording/RecordButton';
+import { UploadRecordForm } from 'features/recording/UploadRecordForm';
+import { useAudioRecorder } from 'features/recording/useAudioRecorder';
 import {
-  ChatClient,
   Sound,
+  ChatClient,
   useMuminstApi,
 } from 'features/api/useMuminstApi';
 
@@ -54,6 +58,7 @@ const FetchSoundsFailed: React.FC<FallbackProps> = ({
 export function App() {
   const [chatClient, setChatClient] = useState<ChatClient>('mumble');
   const { search, setSearch, matchSearch } = useSearch();
+  const recorder = useAudioRecorder();
   const [isLocked, lock] = useLock();
   const [
     favorites,
@@ -89,6 +94,49 @@ export function App() {
         paddingTop={5}>
         <Centered>
           <PageHeading>Muminst</PageHeading>
+        </Centered>
+
+        <Centered sx={{ flexDirection: 'column' }}>
+          {recorder.state.ready && (
+            <RecordButton
+              recording={recorder.state.isRecording}
+              disabled={!recorder.state.ready}
+              onClick={
+                recorder.state.isRecording
+                  ? recorder.handlers.stop
+                  : recorder.handlers.start
+              }>
+              {recorder.state.isRecording ? 'Stop' : 'Start'}
+            </RecordButton>
+          )}
+
+          {recorder.state.url !== undefined && (
+            <Box padding={2}>
+              <UploadRecordForm
+                onSubmit={(values) => {
+                  if (!recorder.state.blob) {
+                    return;
+                  }
+
+                  const filename =
+                    slugify(values.soundName) + '.webm';
+
+                  const file = new File(
+                    [recorder.state.blob],
+                    filename,
+                    {
+                      type: 'audio/webm',
+                    }
+                  );
+
+                  triggerUpload([file], (event) =>
+                    console.log(event)
+                  );
+                  recorder.handlers.reset();
+                }}
+              />
+            </Box>
+          )}
         </Centered>
 
         <FileDropzone uploadState={upload} onUpload={triggerUpload} />

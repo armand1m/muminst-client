@@ -54,11 +54,11 @@ export const playSound = (chatClient: ChatClient, sound: Sound) => {
     ).toString();
     const audio = new Audio(url);
 
-    audio.addEventListener('canplaythrough', (event) => {
+    audio.addEventListener('canplaythrough', (_event) => {
       audio.play();
     });
 
-    audio.addEventListener('ended', (event) => {
+    audio.addEventListener('ended', (_event) => {
       audio.pause();
     });
     return;
@@ -105,10 +105,6 @@ export const useMuminstApi = () => {
     ) => {
       const { data } = await uploadFiles(files, onUploadProgress);
 
-      /**
-       * Only refetch sounds if there
-       * are successful uploads
-       */
       if (data.successful.length > 0) {
         fetchSounds();
       }

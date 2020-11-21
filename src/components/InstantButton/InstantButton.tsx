@@ -76,7 +76,7 @@ export const InstantButton = ({
   <Box
     sx={{
       width: '100px',
-      wordBreak: 'break-all',
+      wordBreak: 'break-word',
       marginX: ['12px', 3],
       marginY: 3,
     }}>
