@@ -20,7 +20,7 @@ export interface Sound {
   name: string;
   id: string;
   fileName: string;
-  extension: '.mp3' | '.wav';
+  extension: '.mp3' | '.wav' | '.webm';
 }
 
 export interface FailedUploadResponse {

@@ -15,11 +15,11 @@ const schema = yup.object({
     .required('Define a sound name for your recording.'),
 });
 
-interface CustomInputProps {
+interface FormInputProps {
   label: string;
 }
 
-const FormInput = (props: UseFieldProps & CustomInputProps) => {
+const FormInput = (props: UseFieldProps & FormInputProps) => {
   const [field, meta] = useField(props);
   return (
     <Box>

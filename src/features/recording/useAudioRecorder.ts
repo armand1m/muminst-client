@@ -1,18 +1,14 @@
 import { useRef, useState } from 'react';
 import { useAsyncFn, useEffectOnce } from 'react-use';
 
-const getUserMedia: MediaDevices['getUserMedia'] = async (
-  constraints
-) => {
+const getUserMedia = async (
+  constraints: MediaStreamConstraints
+): Promise<MediaStream> => {
   if (navigator?.mediaDevices?.getUserMedia) {
     return navigator.mediaDevices.getUserMedia(constraints);
   }
 
   return new Promise((resolve, reject) => {
-    if (!constraints) {
-      throw new Error('failed to load getUserMedia fallback.');
-    }
-
     const getUserMedia: Navigator['getUserMedia'] =
       navigator.getUserMedia ??
       // @ts-ignore
@@ -79,7 +75,7 @@ export const useAudioRecorder = () => {
   });
 
   if (recorderState.error) {
-    console.error('useAudioRecorder error:', recorderState.error);
+    throw recorderState.error;
   }
 
   const result = {
@@ -89,6 +85,7 @@ export const useAudioRecorder = () => {
       ready:
         !Boolean(recorderState.error || recorderState.loading) &&
         recorderState.value !== undefined,
+      error: recorderState.error,
       isRecording,
     },
     handlers: {

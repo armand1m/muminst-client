@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { useEffectOnce } from 'react-use';
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import slugify from 'slugify';
+import { ErrorBoundary } from '@sentry/react';
 import {
   Box,
   Button,
@@ -24,14 +23,12 @@ import { AsyncResource } from 'components/AsyncResource';
 import { useLock } from 'features/lock/useLock';
 import { useSearch } from 'features/search/useSearch';
 import { useFavorites } from 'features/favorites/useFavorites';
-import { RecordButton } from 'features/recording/RecordButton';
-import { UploadRecordForm } from 'features/recording/UploadRecordForm';
-import { useAudioRecorder } from 'features/recording/useAudioRecorder';
 import {
   Sound,
   ChatClient,
   useMuminstApi,
 } from 'features/api/useMuminstApi';
+import { Recorder } from 'features/recording/Recorder';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -44,13 +41,13 @@ const Loader = () => (
   </Centered>
 );
 
-const FetchSoundsFailed: React.FC<FallbackProps> = ({
-  resetErrorBoundary,
+const FetchSoundsFailed: React.FC<{ resetError: () => void }> = ({
+  resetError,
 }) => (
   <Centered sx={{ flexDirection: 'column' }}>
     <Grid gap={2}>
       <Text>Failed to fetch sounds.</Text>
-      <Button onClick={resetErrorBoundary}>Retry</Button>
+      <Button onClick={resetError}>Retry</Button>
     </Grid>
   </Centered>
 );
@@ -58,7 +55,6 @@ const FetchSoundsFailed: React.FC<FallbackProps> = ({
 export function App() {
   const [chatClient, setChatClient] = useState<ChatClient>('mumble');
   const { search, setSearch, matchSearch } = useSearch();
-  const recorder = useAudioRecorder();
   const [isLocked, lock] = useLock();
   const [
     favorites,
@@ -86,7 +82,7 @@ export function App() {
   };
 
   return (
-    <Centered>
+    <Centered sx={{ flexDirection: 'column' }}>
       <Grid
         gap={3}
         columns={['minmax(0, 1fr)', 'minmax(0, 1fr)']}
@@ -94,53 +90,6 @@ export function App() {
         paddingTop={5}>
         <Centered>
           <PageHeading>Muminst</PageHeading>
-        </Centered>
-
-        <Centered sx={{ flexDirection: 'column' }}>
-          {recorder.state.ready && (
-            <RecordButton
-              recording={recorder.state.isRecording}
-              disabled={!recorder.state.ready}
-              onClick={
-                recorder.state.isRecording
-                  ? recorder.handlers.stop
-                  : recorder.handlers.start
-              }>
-              {recorder.state.isRecording ? 'Stop' : 'Start'}
-            </RecordButton>
-          )}
-
-          {recorder.state.url !== undefined && (
-            <Box padding={2}>
-              <UploadRecordForm
-                onReset={() => {
-                  recorder.handlers.reset();
-                }}
-                onSubmit={(values) => {
-                  if (!recorder.state.blob) {
-                    return;
-                  }
-
-                  const filename = `${slugify(
-                    values.soundName
-                  )}.webm`;
-
-                  const file = new File(
-                    [recorder.state.blob],
-                    filename,
-                    {
-                      type: 'audio/webm',
-                    }
-                  );
-
-                  triggerUpload([file], (event) =>
-                    console.log(event)
-                  );
-                  recorder.handlers.reset();
-                }}
-              />
-            </Box>
-          )}
         </Centered>
 
         <FileDropzone uploadState={upload} onUpload={triggerUpload} />
@@ -191,7 +140,7 @@ export function App() {
         <Box>
           <Heading as="h2">All</Heading>
           <ErrorBoundary
-            FallbackComponent={FetchSoundsFailed}
+            fallback={FetchSoundsFailed}
             onReset={fetchSounds}>
             <AsyncResource state={sounds} fallback={<Loader />}>
               {(allSounds) => {
@@ -222,6 +171,10 @@ export function App() {
           </ErrorBoundary>
         </Box>
       </Grid>
+
+      <ErrorBoundary>
+        <Recorder />
+      </ErrorBoundary>
     </Centered>
   );
 }

@@ -148,6 +148,10 @@ export const theme = {
       fontWeight: 'bold',
       cursor: 'pointer',
     },
+    secondary: {
+      color: 'background',
+      bg: 'secondary',
+    },
     close: {
       cursor: 'pointer',
       '&:focus': {
