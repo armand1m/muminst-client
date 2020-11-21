@@ -1,6 +1,35 @@
 import { useRef, useState } from 'react';
 import { useAsyncFn, useEffectOnce } from 'react-use';
 
+const getUserMedia: MediaDevices['getUserMedia'] = async (
+  constraints
+) => {
+  if (navigator?.mediaDevices?.getUserMedia) {
+    return navigator.mediaDevices.getUserMedia(constraints);
+  }
+
+  return new Promise((resolve, reject) => {
+    if (!constraints) {
+      throw new Error('failed to load getUserMedia fallback.');
+    }
+
+    const getUserMedia: Navigator['getUserMedia'] =
+      navigator.getUserMedia ??
+      // @ts-ignore
+      navigator.webkitGetUserMedia ??
+      // @ts-ignore
+      navigator.mozGetUserMedia;
+
+    if (!getUserMedia) {
+      return reject(
+        new Error('getUserMedia is not implemented in this browser')
+      );
+    }
+
+    getUserMedia.call(navigator, constraints, resolve, reject);
+  });
+};
+
 export const useAudioRecorder = () => {
   const [audioUrl, setAudioUrl] = useState<string | undefined>(
     undefined
@@ -20,9 +49,7 @@ export const useAudioRecorder = () => {
 
   const [recorderState, createRecorder] = useAsyncFn(async () => {
     const mimeType = 'audio/webm';
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
+    const stream = await getUserMedia({ audio: true });
     const recorder = new MediaRecorder(stream, { mimeType });
 
     recorder.ondataavailable = function (event) {

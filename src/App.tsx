@@ -113,13 +113,17 @@ export function App() {
           {recorder.state.url !== undefined && (
             <Box padding={2}>
               <UploadRecordForm
+                onReset={() => {
+                  recorder.handlers.reset();
+                }}
                 onSubmit={(values) => {
                   if (!recorder.state.blob) {
                     return;
                   }
 
-                  const filename =
-                    slugify(values.soundName) + '.webm';
+                  const filename = `${slugify(
+                    values.soundName
+                  )}.webm`;
 
                   const file = new File(
                     [recorder.state.blob],

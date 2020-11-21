@@ -25,9 +25,9 @@ const FormInput = (props: UseFieldProps & CustomInputProps) => {
     <Box>
       <Label htmlFor={props.name}>{props.label}</Label>
       <Input {...field} />
-      {meta.touched && meta.error ? (
+      {Boolean(meta.touched && meta.error) && (
         <Text color="red">{meta.error}</Text>
-      ) : null}
+      )}
     </Box>
   );
 };
@@ -36,26 +36,28 @@ const initialValues = {
   soundName: '',
 };
 
-interface FormProps {
-  onSubmit: FormikConfig<typeof initialValues>['onSubmit'];
-}
+type FormConfig = FormikConfig<typeof initialValues>;
+type FormProps = Pick<FormConfig, 'onReset' | 'onSubmit'>;
 
 export const UploadRecordForm: React.FC<FormProps> = ({
+  onReset,
   onSubmit,
-}) => {
-  return (
-    <Formik
-      onSubmit={onSubmit}
-      validationSchema={schema}
-      initialValues={initialValues}>
-      <Form>
-        <Grid gap={2}>
-          <FormInput name="soundName" label="Sound name" />
-          <Box>
-            <Button type="submit">Submit</Button>
-          </Box>
-        </Grid>
-      </Form>
-    </Formik>
-  );
-};
+}) => (
+  <Formik
+    onReset={onReset}
+    onSubmit={onSubmit}
+    validationSchema={schema}
+    initialValues={initialValues}>
+    <Form>
+      <Grid gap={2}>
+        <FormInput name="soundName" label="Sound name" />
+        <Box>
+          <Button mr={2} type="submit">
+            Submit
+          </Button>
+          <Button type="reset">Cancel</Button>
+        </Box>
+      </Grid>
+    </Form>
+  </Formik>
+);
