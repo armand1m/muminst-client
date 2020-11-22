@@ -23,12 +23,12 @@ import { AsyncResource } from 'components/AsyncResource';
 import { useLock } from 'features/lock/useLock';
 import { useSearch } from 'features/search/useSearch';
 import { useFavorites } from 'features/favorites/useFavorites';
+import { Recorder } from 'features/recording/Recorder';
 import {
   Sound,
   ChatClient,
   useMuminstApi,
 } from 'features/api/useMuminstApi';
-import { Recorder } from 'features/recording/Recorder';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -173,7 +173,7 @@ export function App() {
       </Grid>
 
       <ErrorBoundary>
-        <Recorder />
+        <Recorder onUpload={triggerUpload} />
       </ErrorBoundary>
     </Centered>
   );

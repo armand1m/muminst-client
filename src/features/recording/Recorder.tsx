@@ -1,18 +1,33 @@
 import React from 'react';
-import { useMuminstApi } from 'features/api/useMuminstApi';
-import { useAudioRecorder } from './useAudioRecorder';
-import { Box, Grid, Heading } from 'theme-ui';
-import { CenteredGrid } from 'components/CenteredGrid';
+import { Box, Grid, Heading, Label } from 'theme-ui';
+import styled from '@emotion/styled';
 import slugify from 'slugify';
+import { AxiosRequestConfig } from 'axios';
+import { CenteredGrid } from 'components/CenteredGrid';
+import { useAudioRecorder } from './useAudioRecorder';
 import { RecordButton } from './RecordButton';
 import { UploadRecordForm } from './UploadRecordForm';
 
-export const Recorder: React.FC = () => {
+const Audio = styled.audio`
+  height: 42px;
+  outline: none !important;
+
+  &::-webkit-media-controls-enclosure {
+    background: white;
+    border-radius: 4px;
+    max-height: 42px;
+  }
+`;
+
+interface Props {
+  onUpload: (
+    files: File[],
+    onUploadProgress: AxiosRequestConfig['onUploadProgress']
+  ) => void;
+}
+
+export const Recorder: React.FC<Props> = ({ onUpload }) => {
   const recorder = useAudioRecorder();
-  const {
-    // state: { upload },
-    handlers: { triggerUpload },
-  } = useMuminstApi();
 
   return (
     <>
@@ -48,7 +63,10 @@ export const Recorder: React.FC = () => {
             {recorder.state.blob && (
               <Grid gap={2} padding={2}>
                 {recorder.state.url && (
-                  <audio src={recorder.state.url} controls={true} />
+                  <Box>
+                    <Label>Sound</Label>
+                    <Audio controls src={recorder.state.url} />
+                  </Box>
                 )}
 
                 <UploadRecordForm
@@ -72,9 +90,7 @@ export const Recorder: React.FC = () => {
                       }
                     );
 
-                    triggerUpload([file], (event) =>
-                      console.log(event)
-                    );
+                    onUpload([file], (event) => console.log(event));
                     recorder.handlers.reset();
                   }}
                 />
