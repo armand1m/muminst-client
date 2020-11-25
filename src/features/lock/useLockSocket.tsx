@@ -1,4 +1,3 @@
-import { useLocalStorage } from 'react-use';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 interface LockState {

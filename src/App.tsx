@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { useEffectOnce, useLocalStorage } from 'react-use';
+import { useEffectOnce } from 'react-use';
 import { ErrorBoundary } from '@sentry/react';
 import {
   Box,
