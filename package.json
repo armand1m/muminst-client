@@ -24,6 +24,7 @@
     "react-icons": "^3.11.0",
     "react-scripts": "3.4.3",
     "react-use": "^15.3.4",
+    "react-use-websocket": "^2.2.0",
     "slugify": "^1.4.6",
     "theme-ui": "^0.3.1",
     "typescript": "~3.7.2",
