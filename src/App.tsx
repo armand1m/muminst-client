@@ -29,6 +29,7 @@ import {
   ChatClient,
   useMuminstApi,
 } from 'features/api/useMuminstApi';
+import { useLock } from 'features/lock/useLock';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -55,7 +56,8 @@ const FetchSoundsFailed: React.FC<{ resetError: () => void }> = ({
 export function App() {
   const [chatClient, setChatClient] = useState<ChatClient>('mumble');
   const { search, setSearch, matchSearch } = useSearch();
-  const { isLocked } = useLockSocket();
+  const [isLockedLocally, lock] = useLock();
+  const lockSocket = useLockSocket();
   const [
     favorites,
     addFavorite,
@@ -74,11 +76,14 @@ export function App() {
 
   const onPlay = (sound: Sound) => {
     playSound(chatClient, sound);
+    lock();
   };
 
   const onPlayPreview = (sound: Sound) => {
     playSound('browser', sound);
   };
+
+  const isLocked = isLockedLocally || lockSocket.isLocked;
 
   return (
     <Centered sx={{ flexDirection: 'column' }}>
