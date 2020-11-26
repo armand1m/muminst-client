@@ -20,7 +20,7 @@ import { PageHeading } from 'components/PageHeading';
 import { FileDropzone } from 'components/FileDropzone';
 import { InstantButton } from 'components/InstantButton';
 import { AsyncResource } from 'components/AsyncResource';
-import { useLock } from 'features/lock/useLock';
+import { useLockSocket } from 'features/lock/useLockSocket';
 import { useSearch } from 'features/search/useSearch';
 import { useFavorites } from 'features/favorites/useFavorites';
 import { Recorder } from 'features/recording/Recorder';
@@ -55,7 +55,7 @@ const FetchSoundsFailed: React.FC<{ resetError: () => void }> = ({
 export function App() {
   const [chatClient, setChatClient] = useState<ChatClient>('mumble');
   const { search, setSearch, matchSearch } = useSearch();
-  const [isLocked, lock] = useLock();
+  const { isLocked } = useLockSocket();
   const [
     favorites,
     addFavorite,
@@ -74,7 +74,6 @@ export function App() {
 
   const onPlay = (sound: Sound) => {
     playSound(chatClient, sound);
-    lock();
   };
 
   const onPlayPreview = (sound: Sound) => {
