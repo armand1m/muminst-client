@@ -6,7 +6,7 @@ interface LockState {
 
 const socketUrl =
   String(process.env.REACT_APP_API_URL).replace('http', 'ws') +
-  'ws';
+  '/ws';
 
 export const useLockSocket = (): LockState => {
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
