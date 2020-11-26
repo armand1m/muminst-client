@@ -4,10 +4,11 @@ interface LockState {
   isLocked: boolean;
 }
 
+const socketUrl =
+  String(process.env.REACT_APP_API_URL).replace('http', 'ws') +
+  'ws';
+
 export const useLockSocket = (): LockState => {
-  const socketUrl =
-    String(process.env.REACT_APP_API_URL).replace('http', 'ws') +
-    'ws';
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     onOpen: () => console.log('WebSocket connection established.'),
     /** Will attempt to reconnect on all close events, such as server shutting down */
