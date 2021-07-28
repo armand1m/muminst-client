@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import styled from '@emotion/styled';
 import { useEffectOnce } from 'react-use';
 import { ErrorBoundary } from '@sentry/react';
@@ -20,16 +20,17 @@ import { PageHeading } from 'components/PageHeading';
 import { FileDropzone } from 'components/FileDropzone';
 import { InstantButton } from 'components/InstantButton';
 import { AsyncResource } from 'components/AsyncResource';
-import { useLockSocket } from 'features/lock/useLockSocket';
+import { Recorder } from 'features/recording/Recorder';
 import { useSearch } from 'features/search/useSearch';
 import { useFavorites } from 'features/favorites/useFavorites';
-import { Recorder } from 'features/recording/Recorder';
+import { useLock } from 'features/lock/useLock';
+import { useLockSocket } from 'features/lock/useLockSocket';
 import {
   Sound,
   ChatClient,
   useMuminstApi,
 } from 'features/api/useMuminstApi';
-import { useLock } from 'features/lock/useLock';
+import { fuzzyFilter } from 'features/search/useFuzzyFilter/fuzzyFilter';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -54,8 +55,8 @@ const FetchSoundsFailed: React.FC<{ resetError: () => void }> = ({
 );
 
 export function App() {
-  const [chatClient, setChatClient] = useState<ChatClient>('mumble');
-  const { search, setSearch, matchSearch } = useSearch();
+  const [chatClient, setChatClient] = useState<ChatClient>('discord');
+  const { search, setSearch } = useSearch();
   const [isLockedLocally, lock] = useLock();
   const lockSocket = useLockSocket();
   const [
@@ -74,16 +75,38 @@ export function App() {
     fetchSounds();
   });
 
-  const onPlay = (sound: Sound) => {
-    playSound(chatClient, sound);
-    lock();
-  };
+  const onPlay = useCallback(
+    (sound: Sound) => {
+      playSound(chatClient, sound);
+      lock();
+    },
+    [playSound, chatClient, lock]
+  );
 
-  const onPlayPreview = (sound: Sound) => {
-    playSound('browser', sound);
-  };
+  const onPlayPreview = useCallback(
+    (sound: Sound) => {
+      playSound('browser', sound);
+    },
+    [playSound]
+  );
 
   const isLocked = isLockedLocally || lockSocket.isLocked;
+
+  const unfavorited = useMemo(() => {
+    if (sounds.loading || sounds.error || !sounds.value) {
+      return [];
+    }
+
+    return sounds.value.filter((sound) => !hasFavorite(sound));
+  }, [sounds, hasFavorite]);
+
+  const filtered = useMemo(() => {
+    if (search === '') {
+      return unfavorited;
+    }
+
+    return fuzzyFilter('name', unfavorited, search);
+  }, [unfavorited, search]);
 
   return (
     <Centered sx={{ flexDirection: 'column' }}>
@@ -102,8 +125,9 @@ export function App() {
           <Label htmlFor="search">Search</Label>
           <Input
             id="search"
+            name="search"
             value={search}
-            onChange={(evt) => setSearch(evt.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
           />
         </Box>
 
@@ -112,10 +136,9 @@ export function App() {
           <Select
             id="chat-client"
             value={chatClient}
-            onChange={(evt) =>
-              setChatClient(evt.target.value as ChatClient)
+            onChange={(event) =>
+              setChatClient(event.target.value as ChatClient)
             }>
-            <option value="mumble">Mumble</option>
             <option value="discord">Discord</option>
             <option value="telegram">Telegram</option>
             <option value="browser">Browser</option>
@@ -147,11 +170,7 @@ export function App() {
             fallback={FetchSoundsFailed}
             onReset={fetchSounds}>
             <AsyncResource state={sounds} fallback={<Loader />}>
-              {(allSounds) => {
-                const filtered = allSounds
-                  .filter((sound) => !hasFavorite(sound))
-                  .filter(matchSearch);
-
+              {(_allSounds) => {
                 if (filtered.length === 0) {
                   return <Text>No results for "{search}"</Text>;
                 }

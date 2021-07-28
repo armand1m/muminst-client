@@ -17,6 +17,8 @@
     "@types/react-dom": "^16.9.0",
     "axios": "^0.20.0",
     "formik": "^3.0.0-next.7",
+    "fuzzaldrin": "^2.1.0",
+    "lodash.escaperegexp": "^4.1.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.2.0",
@@ -26,6 +28,7 @@
     "react-use": "^15.3.4",
     "react-use-websocket": "^2.2.0",
     "slugify": "^1.4.6",
+    "split-string": "^6.1.0",
     "theme-ui": "^0.3.1",
     "typescript": "~3.7.2",
     "yup": "^0.30.0"
@@ -55,6 +58,8 @@
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.7",
+    "@types/fuzzaldrin": "^2.1.4",
+    "@types/lodash.escaperegexp": "^4.1.6",
     "@types/theme-ui": "^0.3.7",
     "@types/yup": "^0.29.9",
     "prettier": "^2.1.2"

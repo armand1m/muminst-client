@@ -1,5 +1,6 @@
 import { useLocalStorage } from 'react-use';
 import { Sound } from 'features/api/useMuminstApi';
+import { useCallback } from 'react';
 
 export const useFavorites = () => {
   const [favorites, setFavorites] = useLocalStorage<Sound[]>(
@@ -7,23 +8,34 @@ export const useFavorites = () => {
     []
   );
 
-  const safeFavorites = favorites ? favorites : [];
+  const safeFavorites = favorites ?? [];
 
-  const add = (sound: Sound) => {
-    const nextState = [...safeFavorites, sound];
-    setFavorites(nextState);
-  };
+  const add = useCallback(
+    (sound: Sound) => {
+      const nextState = [...safeFavorites, sound];
+      setFavorites(nextState);
+    },
+    [safeFavorites, setFavorites]
+  );
 
-  const remove = (sound: Sound) => {
-    const nextState = safeFavorites.filter(
-      (favorite) => favorite.id !== sound.id
-    );
-    setFavorites(nextState);
-  };
+  const remove = useCallback(
+    (sound: Sound) => {
+      const nextState = safeFavorites.filter(
+        (favorite) => favorite.id !== sound.id
+      );
+      setFavorites(nextState);
+    },
+    [safeFavorites, setFavorites]
+  );
 
-  const has = (sound: Sound) => {
-    return safeFavorites.find((favorite) => favorite.id === sound.id);
-  };
+  const has = useCallback(
+    (sound: Sound) => {
+      return safeFavorites.find(
+        (favorite) => favorite.id === sound.id
+      );
+    },
+    [safeFavorites]
+  );
 
   type FavoritesHook = [
     typeof safeFavorites,

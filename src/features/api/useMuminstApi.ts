@@ -1,20 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { useAsyncFn } from 'react-use';
 
-export type ChatClient =
-  | 'discord'
-  | 'mumble'
-  | 'telegram'
-  | 'browser';
-
-export interface MumbleChannel {
-  children: object;
-  links: object;
-  id: number;
-  name: string;
-  position: number;
-  parent?: MumbleChannel;
-}
+export type ChatClient = 'discord' | 'telegram' | 'browser';
 
 export interface Sound {
   name: string;
@@ -40,9 +27,6 @@ export interface UploadResponse {
 
 const baseURL = process.env.REACT_APP_API_URL;
 const client = axios.create({ baseURL });
-
-export const getChannels = () =>
-  client.get<MumbleChannel[]>('channels');
 
 export const getSounds = () => client.get<Sound[]>('sounds');
 
@@ -88,11 +72,6 @@ export const uploadFiles = (
 };
 
 export const useMuminstApi = () => {
-  const [channels, fetchChannels] = useAsyncFn(async () => {
-    const { data } = await getChannels();
-    return data;
-  });
-
   const [sounds, fetchSounds] = useAsyncFn(async () => {
     const { data } = await getSounds();
     return data;
@@ -117,12 +96,10 @@ export const useMuminstApi = () => {
   return {
     state: {
       sounds,
-      channels,
       upload,
     },
     handlers: {
       fetchSounds,
-      fetchChannels,
       triggerUpload,
       playSound,
     },
