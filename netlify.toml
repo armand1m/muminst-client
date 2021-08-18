@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/api/*"
-  to = "http://microfree.octor.cc:4000/sounds/:splat"
+  to = "http://microfree.octor.cc:4000/:splat"
   status = 200
   force = true
   [redirects.headers]
