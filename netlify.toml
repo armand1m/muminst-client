@@ -1,0 +1,7 @@
+[[redirects]]
+  from = "/api/*"
+  to = "http://microfree.octor.cc:4000/sounds/:splat"
+  status = 200
+  force = true
+  [redirects.headers]
+    X-From = "Netlify"
