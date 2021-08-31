@@ -10,7 +10,6 @@ import {
   Heading,
   Input,
   Label,
-  Select,
   Spinner,
   Text,
 } from 'theme-ui';
@@ -55,7 +54,7 @@ const FetchSoundsFailed: React.FC<{ resetError: () => void }> = ({
 );
 
 export function App() {
-  const [chatClient, setChatClient] = useState<ChatClient>('discord');
+  const [chatClient] = useState<ChatClient>('discord');
   const { search, setSearch } = useSearch();
   const [isLockedLocally, lock] = useLock();
   const lockSocket = useLockSocket();
@@ -112,15 +111,15 @@ export function App() {
     <Centered sx={{ flexDirection: 'column' }}>
       <Grid
         gap={3}
-        columns={['minmax(0, 1fr)', 'minmax(0, 1fr)']}
         padding={[3, 4]}
-        paddingTop={5}>
+        paddingTop={5}
+        sx={{ minWidth: '100%' }}>
         <Centered>
           <PageHeading>Muminst</PageHeading>
         </Centered>
 
         <FileDropzone uploadState={upload} onUpload={triggerUpload} />
-
+          
         <Box>
           <Label htmlFor="search">Search</Label>
           <Input
@@ -129,20 +128,6 @@ export function App() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
-        </Box>
-
-        <Box>
-          <Label htmlFor="chat-client">Chat Client</Label>
-          <Select
-            id="chat-client"
-            value={chatClient}
-            onChange={(event) =>
-              setChatClient(event.target.value as ChatClient)
-            }>
-            <option value="discord">Discord</option>
-            <option value="telegram">Telegram</option>
-            <option value="browser">Browser</option>
-          </Select>
         </Box>
 
         {favorites.length > 0 && (
@@ -177,7 +162,7 @@ export function App() {
 
                 return (
                   <ButtonsSection>
-                    {filtered.map((sound) => (
+                    {filtered.map((sound: any) => (
                       <InstantButton
                         key={sound.id}
                         sound={sound}
