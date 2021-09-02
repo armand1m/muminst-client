@@ -114,7 +114,8 @@ export function App() {
         gap={3}
         columns={['minmax(0, 1fr)', 'minmax(0, 1fr)']}
         padding={[3, 4]}
-        paddingTop={5}>
+        paddingTop={5}
+        sx={{ minWidth: '100%' }}>
         <Centered>
           <PageHeading>Muminst</PageHeading>
         </Centered>
