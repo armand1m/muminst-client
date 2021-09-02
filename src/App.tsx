@@ -119,7 +119,7 @@ export function App() {
         </Centered>
 
         <FileDropzone uploadState={upload} onUpload={triggerUpload} />
-          
+
         <Box>
           <Label htmlFor="search">Search</Label>
           <Input
