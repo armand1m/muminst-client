@@ -33,6 +33,11 @@ export const NewTagsModal: FC<Props> = ({
     }
   };
 
+  const onCancel = () => {
+    setNewTags([]);
+    onClose();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -60,7 +65,7 @@ export const NewTagsModal: FC<Props> = ({
       <Flex sx={{ justifyContent: 'flex-end' }}>
         <Grid gap={2} columns={2}>
           <Button onClick={onSubmit}>Submit</Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onCancel}>Cancel</Button>
         </Grid>
       </Flex>
     </Modal>
