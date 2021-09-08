@@ -178,7 +178,7 @@ export function App() {
 
                 return (
                   <ButtonsSection>
-                    {filtered.map(({ item }: any) => (
+                    {filtered.map(({ item }) => (
                       <InstantButton
                         key={item.id}
                         sound={item}

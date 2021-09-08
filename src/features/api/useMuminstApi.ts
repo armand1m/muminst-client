@@ -58,7 +58,7 @@ export const playSound = (chatClient: ChatClient, sound: Sound) => {
 
 export const uploadFiles = async (
   files: File[],
-  tags: string[] = [],
+  tags: string[],
   onUploadProgress: AxiosRequestConfig['onUploadProgress']
 ) => {
   const formData = new FormData();
