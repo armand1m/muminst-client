@@ -28,6 +28,30 @@ export const CSSBaseline = () => (
         color: inherit;
         text-decoration: none;
       }
+
+      .react-tag-input {
+        background: transparent;
+        color: inherit;
+        border-radius: 4px;
+        min-height: 42px;
+        border-color: inherit;
+      } /* Wrapper */
+      .react-tag-input__input {
+        color: inherit;
+      } /* Inner input */
+      .react-tag-input__tag {
+        background: transparent;
+      } /* Tag wrapper */
+      .react-tag-input__tag__content {
+      } /* The text content within the tag */
+      .react-tag-input__tag__remove {
+        background: transparent;
+
+        &::before,
+        &::after {
+          background: red;
+        }
+      } /* The remove button & icon for a tag */
     `}
   />
 );

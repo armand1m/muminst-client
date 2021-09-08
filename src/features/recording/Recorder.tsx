@@ -22,6 +22,7 @@ const Audio = styled.audio`
 interface Props {
   onUpload: (
     files: File[],
+    tags: string[],
     onUploadProgress: AxiosRequestConfig['onUploadProgress']
   ) => void;
 }
@@ -61,7 +62,7 @@ export const Recorder: React.FC<Props> = ({ onUpload }) => {
             )}
 
             {recorder.state.blob && (
-              <Grid gap={2} padding={2}>
+              <Grid gap={2} padding={2} sx={{ maxWidth: 315 }}>
                 {recorder.state.url && (
                   <Box>
                     <Label>Sound</Label>
@@ -90,7 +91,9 @@ export const Recorder: React.FC<Props> = ({ onUpload }) => {
                       }
                     );
 
-                    onUpload([file], (event) => console.log(event));
+                    onUpload([file], values.tags, (event) =>
+                      console.log(event)
+                    );
                     recorder.handlers.reset();
                   }}
                 />

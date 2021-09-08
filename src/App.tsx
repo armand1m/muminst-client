@@ -29,7 +29,8 @@ import {
   ChatClient,
   useMuminstApi,
 } from 'features/api/useMuminstApi';
-import { fuzzyFilter } from 'features/search/useFuzzyFilter/fuzzyFilter';
+import Fuse from 'fuse.js';
+import { NewTagsModal } from 'components/NewTagsModal';
 
 const ButtonsSection = styled(Flex)`
   flex-wrap: wrap;
@@ -64,6 +65,13 @@ export function App() {
     removeFavorite,
     hasFavorite,
   ] = useFavorites();
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [currSound, setCurrSound] = useState<Sound>();
+
+  const onAddTag = (sound: Sound) => {
+    setCurrSound(sound);
+    setIsOpen(true);
+  };
 
   const {
     state: { sounds, upload },
@@ -101,10 +109,17 @@ export function App() {
 
   const filtered = useMemo(() => {
     if (search === '') {
-      return unfavorited;
+      return unfavorited.map((sound) => ({
+        item: sound,
+      }));
     }
 
-    return fuzzyFilter('name', unfavorited, search);
+    const searcher = new Fuse(unfavorited, {
+      includeScore: true,
+      keys: ['name', 'tags'],
+    });
+
+    return searcher.search(search);
   }, [unfavorited, search]);
 
   return (
@@ -119,7 +134,7 @@ export function App() {
         </Centered>
 
         <FileDropzone uploadState={upload} onUpload={triggerUpload} />
-          
+
         <Box>
           <Label htmlFor="search">Search</Label>
           <Input
@@ -143,6 +158,7 @@ export function App() {
                   onClick={onPlay}
                   onFavorite={removeFavorite}
                   onPlayPreview={onPlayPreview}
+                  onAddTag={() => onAddTag(sound)}
                 />
               ))}
             </ButtonsSection>
@@ -162,14 +178,15 @@ export function App() {
 
                 return (
                   <ButtonsSection>
-                    {filtered.map((sound: any) => (
+                    {filtered.map(({ item }: any) => (
                       <InstantButton
-                        key={sound.id}
-                        sound={sound}
+                        key={item.id}
+                        sound={item}
                         disabled={isLocked}
                         onClick={onPlay}
                         onFavorite={addFavorite}
                         onPlayPreview={onPlayPreview}
+                        onAddTag={() => onAddTag(item)}
                       />
                     ))}
                   </ButtonsSection>
@@ -179,6 +196,16 @@ export function App() {
           </ErrorBoundary>
         </Box>
       </Grid>
+
+      <NewTagsModal
+        isOpen={modalIsOpen}
+        onClose={() => setIsOpen(false)}
+        sound={currSound}
+        onSuccess={() => {
+          setIsOpen(false);
+          fetchSounds();
+        }}
+      />
 
       <ErrorBoundary>
         <Recorder onUpload={triggerUpload} />
