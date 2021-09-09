@@ -12,6 +12,7 @@ import {
   Label,
   Spinner,
   Text,
+  Select,
 } from 'theme-ui';
 
 import { Centered } from 'components/Centered';
@@ -55,7 +56,7 @@ const FetchSoundsFailed: React.FC<{ resetError: () => void }> = ({
 );
 
 export function App() {
-  const [chatClient] = useState<ChatClient>('discord');
+  const [chatClient, setChatClient] = useState<ChatClient>('discord');
   const { search, setSearch } = useSearch();
   const [isLockedLocally, lock] = useLock();
   const lockSocket = useLockSocket();
@@ -143,6 +144,20 @@ export function App() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
+        </Box>
+
+        <Box>
+          <Label htmlFor="chat-client">Chat Client</Label>
+          <Select
+            id="chat-client"
+            value={chatClient}
+            onChange={(event) =>
+              setChatClient(event.target.value as ChatClient)
+            }>
+            <option value="discord">Discord</option>
+            <option value="telegram">Telegram</option>
+            <option value="browser">Browser</option>
+          </Select>
         </Box>
 
         {favorites.length > 0 && (
