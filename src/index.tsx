@@ -8,6 +8,7 @@ import { cacheButtonUrls } from './features/buttons/getButtonUrl';
 import { theme } from './features/theme';
 import { CSSBaseline } from './components/CSSBaseline';
 import { ToggleColorModeButton } from 'components/ToggleColorModeButton';
+import '@pathofdev/react-tag-input/build/index.css';
 
 cacheButtonUrls();
 

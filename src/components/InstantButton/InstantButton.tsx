@@ -1,10 +1,15 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Box, Grid, IconButton } from 'theme-ui';
-import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import {
+  AiFillStar,
+  AiFillTags,
+  AiOutlineStar,
+} from 'react-icons/ai';
 import { BsPlayFill } from 'react-icons/bs';
 import { Sound } from 'features/api/useMuminstApi';
 import { getButtonUrl } from 'features/buttons/getButtonUrl';
+import { Tags } from 'components/Tags';
 
 const Container = styled.div`
   display: flex;
@@ -63,6 +68,7 @@ interface Props {
   onClick: (sound: Sound) => void;
   onPlayPreview: (sound: Sound) => void;
   onFavorite: (sound: Sound) => void;
+  onAddTag: () => void;
 }
 
 export const InstantButton = ({
@@ -72,6 +78,7 @@ export const InstantButton = ({
   isFavorite,
   onPlayPreview,
   onFavorite,
+  onAddTag,
 }: Props) => (
   <Box
     sx={{
@@ -88,13 +95,15 @@ export const InstantButton = ({
       />
       <Text>{sound.name}</Text>
 
+      <Tags tags={sound.tags} />
+
       <Grid
         gap={2}
         sx={{
           position: 'absolute',
           alignItems: 'center',
           justifyContent: 'center',
-          top: 0,
+          top: -15,
           right: -20,
         }}>
         <IconButton
@@ -120,6 +129,15 @@ export const InstantButton = ({
           onClick={() => onPlayPreview(sound)}
           aria-label="Play sound on the browser">
           <BsPlayFill color="currentColor" />
+        </IconButton>
+        <IconButton
+          sx={{
+            color: 'text',
+            bg: 'secondary',
+          }}
+          onClick={onAddTag}
+          aria-label="Add new tag">
+          <AiFillTags color="currentColor" />
         </IconButton>
       </Grid>
     </Container>

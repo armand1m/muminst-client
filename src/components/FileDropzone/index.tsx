@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { AxiosRequestConfig } from 'axios';
 import { AsyncState } from 'react-use/lib/useAsync';
@@ -6,6 +6,7 @@ import { useDropzone, DropzoneRootProps } from 'react-dropzone';
 import { Button, Close, Flex, Grid, Progress, Text } from 'theme-ui';
 import { UploadResponse } from 'features/api/useMuminstApi';
 import { useFileUploadState } from 'features/upload/useFileUploadState';
+import ReactTagInput from '@pathofdev/react-tag-input';
 
 const getColor = (props: DropzoneRootProps) => {
   if (props.isDragAccept) {
@@ -40,6 +41,7 @@ interface Props {
   uploadState: AsyncState<UploadResponse>;
   onUpload: (
     files: File[],
+    tags: string[],
     onUploadProgress: AxiosRequestConfig['onUploadProgress']
   ) => void;
 }
@@ -57,6 +59,7 @@ export const FileDropzone: React.FC<Props> = ({
     reset,
     removeFile,
   } = useFileUploadState();
+  const [tags, setTags] = useState<string[]>([]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -71,6 +74,13 @@ export const FileDropzone: React.FC<Props> = ({
     onDrop,
   });
 
+  const _reset = () => {
+    reset();
+    setTags([]);
+  };
+
+  const hasFiles = useMemo(() => files.length > 0, [files]);
+
   return (
     <Grid gap={2}>
       <Container {...getRootProps()}>
@@ -84,7 +94,7 @@ export const FileDropzone: React.FC<Props> = ({
         )}
       </Container>
 
-      {files.length > 0 && (
+      {hasFiles && (
         <>
           {files.map((file) => {
             const success = uploadState.value?.successful.find(
@@ -127,6 +137,8 @@ export const FileDropzone: React.FC<Props> = ({
         </>
       )}
 
+      {hasFiles && <ReactTagInput tags={tags} onChange={setTags} />}
+
       {progress !== undefined && (
         <>
           <Progress max={1} value={progress} />
@@ -140,16 +152,16 @@ export const FileDropzone: React.FC<Props> = ({
         </Text>
       )}
 
-      {files.length > 0 && (
+      {hasFiles && (
         <Flex sx={{ justifyContent: 'flex-end' }}>
           <Grid gap={2} columns={2}>
             <Button
               onClick={(_e) => {
-                onUpload(files, onUploadProgress);
+                onUpload(files, tags, onUploadProgress);
               }}>
               Submit
             </Button>
-            <Button onClick={reset}>Reset</Button>
+            <Button onClick={_reset}>Reset</Button>
           </Grid>
         </Flex>
       )}
