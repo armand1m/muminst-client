@@ -98,7 +98,10 @@ export function App() {
     [playSound]
   );
 
+  // TODO: add ssupport for isLocked in new
+  // rust server
   const isLocked = isLockedLocally || lockSocket.isLocked;
+  console.log({ isLocked });
 
   const unfavorited = useMemo(() => {
     if (sounds.loading || sounds.error || !sounds.value) {
@@ -169,7 +172,8 @@ export function App() {
                   isFavorite
                   key={sound.id}
                   sound={sound}
-                  disabled={isLocked}
+                  //disabled={isLocked}
+                  disabled={false}
                   onClick={onPlay}
                   onFavorite={removeFavorite}
                   onPlayPreview={onPlayPreview}
@@ -197,7 +201,8 @@ export function App() {
                       <InstantButton
                         key={item.id}
                         sound={item}
-                        disabled={isLocked}
+                        //disabled={isLocked}
+                        disabled={false}
                         onClick={onPlay}
                         onFavorite={addFavorite}
                         onPlayPreview={onPlayPreview}
