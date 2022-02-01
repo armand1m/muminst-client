@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react';
-import { addTags, Sound } from 'features/api/useMuminstApi';
+import React, { useState } from 'react';
+import { Sound } from 'features/api/useMuminstApi';
 import Modal from 'react-modal';
 import { useThemeUI } from 'theme-ui';
 import ReactTagInput from '@pathofdev/react-tag-input';
@@ -8,16 +8,19 @@ import { Box, Heading, Text, Flex, Grid, Button } from 'theme-ui';
 
 interface Props {
   isOpen: boolean;
+  onSubmit: (sound: Sound, tags: string[]) => Promise<void>;
   onClose: () => void;
   onSuccess: () => void;
   sound?: Sound;
 }
-export const NewTagsModal: FC<Props> = ({
+
+export const NewTagsModal = ({
   isOpen,
   onClose,
   sound,
+  onSubmit,
   onSuccess,
-}) => {
+}: Props) => {
   const { theme } = useThemeUI();
   const [newTags, setNewTags] = useState<string[]>([]);
 
@@ -25,9 +28,9 @@ export const NewTagsModal: FC<Props> = ({
     return <></>;
   }
 
-  const onSubmit = async () => {
+  const onSubmitClick = async () => {
     if (newTags.length > 0) {
-      await addTags(sound, newTags);
+      await onSubmit(sound, newTags);
       setNewTags([]);
       onSuccess();
     }
@@ -64,7 +67,7 @@ export const NewTagsModal: FC<Props> = ({
       </Box>
       <Flex sx={{ justifyContent: 'flex-end' }}>
         <Grid gap={2} columns={2}>
-          <Button onClick={onSubmit}>Submit</Button>
+          <Button onClick={onSubmitClick}>Submit</Button>
           <Button onClick={onCancel}>Cancel</Button>
         </Grid>
       </Flex>
