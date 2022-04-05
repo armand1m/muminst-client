@@ -105,10 +105,7 @@ export function App() {
     [playSound]
   );
 
-  // TODO: add support for isLocked in new rust server
-  const isLocked =
-    apiMode === ApiMode.Node &&
-    (isLockedLocally || lockSocket.isLocked);
+  const isLocked = isLockedLocally || lockSocket.isLocked;
 
   const unfavorited = useMemo(() => {
     if (sounds.loading || sounds.error || !sounds.value) {
